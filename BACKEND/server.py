@@ -164,6 +164,10 @@ def download_youtube_audio(video_id: str) -> str:
         'noprogress': True,
         'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'referer': 'https://www.youtube.com/',
+        'extractor_args': {'youtube': {'player_client': ['android', 'ios']}},
+        'nocheckcertificate': True,
+        'geo_bypass': True,
+        'cachedir': False,
     }
 
     try:
