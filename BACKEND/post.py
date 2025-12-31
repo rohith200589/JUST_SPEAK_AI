@@ -29,7 +29,7 @@ def health_check():
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-DEVTO_API_KEY = "juq3WdgTVqkGYWJ8kj41LvWj"
+DEVTO_API_KEY = os.environ.get("DEVTO_API_KEY", "juq3WdgTVqkGYWJ8kj41LvWj")
 if not DEVTO_API_KEY:
     print("WARNING: DEVTO_API_KEY environment variable not set. Dev.to posting will not work.")
 
