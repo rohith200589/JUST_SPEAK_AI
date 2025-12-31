@@ -23,7 +23,11 @@ from flask_graphql import GraphQLView
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/health')
+@app.route('/')
+def index():
+    return "Post Service is running!"
+
+@app.route('/health', methods=['GET'])
 def health_check():
     return jsonify({"status": "ok", "service": "post_service"}), 200
 
