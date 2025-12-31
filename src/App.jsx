@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 
 // Import your page components
-import HomePage from './pages/HomePage';
+import HomePage from './pages/Homepage';
 import SEO, { DashboardProvider } from './pages/SEO';
 import TranscriptPage from './pages/Transcript';
 import PostPage from './pages/Post';
@@ -103,7 +103,7 @@ function App() {
             <Route path="/generate-post" element={<Navigate to="/generate-post/welcome" replace />} />
             <Route path="/generate-post/welcome" element={<PostPage transcriptHistory={transcriptHistory} />} />
             <Route path="/generate-post/generate" element={<PostPage transcriptHistory={transcriptHistory} />} />
-    
+
             <Route path="/transcribe/insights" element={<AnalyticsPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/settings" element={<SettingsPage />} />
