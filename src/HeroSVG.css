@@ -1,0 +1,168 @@
+/* src/components/Home/HeroSVG.css */
+
+/* SVG Container Styling */
+.svg-container {
+    width: 100%;
+    max-width: 450px;
+    height: auto;
+    aspect-ratio: 450 / 400;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--color-svg-bg-from), var(--color-svg-bg-to));
+    border-radius: 8px;
+}
+
+/* Keyframes for SVG animations */
+@keyframes voiceWaveFlow {
+    0% {
+        stroke-dashoffset: 0;
+        stroke-width: 3;
+        opacity: 0.7;
+    }
+    50% {
+        stroke-dashoffset: 200;
+        stroke-width: 4;
+        opacity: 1;
+    }
+    100% {
+        stroke-dashoffset: 400;
+        stroke-width: 3;
+        opacity: 0.7;
+    }
+}
+
+@keyframes gentleShake {
+    0% {
+        transform: translate(0px, 0px);
+    }
+    25% {
+        transform: translate(0.5px, -0.5px);
+    }
+    50% {
+        transform: translate(-0.5px, 0.5px);
+    }
+    75% {
+        transform: translate(0.5px, 0.5px);
+    }
+    100% {
+        transform: translate(0px, 0px);
+    }
+}
+
+@keyframes micPulseEffect {
+    0% {
+        transform: translate(0, 0) scale(1);
+        filter: brightness(1);
+    }
+    50% {
+        transform: translate(0, -2px) scale(1.01);
+        filter: brightness(1.05);
+    }
+    100% {
+        transform: translate(0, 0) scale(1);
+        filter: brightness(1);
+    }
+}
+
+@keyframes iconMotion {
+    0% {
+        transform: translate(0px, 0px) scale(0.9) rotate(0deg);
+        opacity: 0.8;
+    }
+    25% {
+        transform: translate(10px, -15px) scale(1) rotate(8deg);
+        opacity: 0.9;
+    }
+    50% {
+        transform: translate(-15px, 10px) scale(0.95) rotate(-5deg);
+        opacity: 0.85;
+    }
+    75% {
+        transform: translate(5px, 20px) scale(1.05) rotate(10deg);
+        opacity: 0.95;
+    }
+    100% {
+        transform: translate(0px, 0px) scale(0.9) rotate(0deg);
+        opacity: 0.8;
+    }
+}
+
+@keyframes cellularWavePulse {
+    0% {
+        opacity: 0.2;
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        opacity: 0.2;
+    }
+}
+
+/* Apply animations */
+.voice-wave {
+    animation: voiceWaveFlow 4s linear infinite;
+}
+
+.post-content {
+    animation: gentleShake 4s ease-in-out infinite, micPulseEffect 3s ease-in-out infinite;
+    transform-origin: center;
+    transition: transform 0.2s ease-out, filter 0.2s ease-out;
+    cursor: pointer;
+}
+
+.post-content:hover {
+    transform: translate(0, -5px) scale(1.03);
+    filter: brightness(1.1);
+    animation: none;
+}
+
+.post-content:active {
+    transform: translate(0, 2px) scale(0.98);
+    filter: brightness(0.9);
+    transition: transform 0.1s ease-in, filter 0.1s ease-in;
+    animation: none;
+}
+
+.post-content:nth-of-type(1) { animation-delay: 0s, 0s; }
+.post-content:nth-of-type(2) { animation-delay: 0s, 0.5s; }
+.post-content:nth-of-type(3) { animation-delay: 0s, 1s; }
+
+.microphone-content {
+    transform-origin: center;
+    transition: transform 0.2s ease-out, filter 0.2s ease-out;
+    cursor: pointer;
+}
+
+.microphone-content:hover {
+    transform: translate(0, -3px) scale(1.02);
+    filter: brightness(1.1);
+}
+
+.microphone-content:active {
+    transform: translate(0, 1px) scale(0.99);
+    filter: brightness(0.9);
+    transition: transform 0.1s ease-in, filter 0.1s ease-in;
+}
+
+.social-icon {
+    animation: iconMotion 15s ease-in-out infinite;
+    transform-origin: center;
+}
+.social-icon:nth-child(1) { animation-delay: 0s; }
+.social-icon:nth-child(2) { animation-delay: -3s; }
+.social-icon:nth-child(3) { animation-delay: -6s; }
+.social-icon:nth-child(4) { animation-delay: -9s; }
+.social-icon:nth-child(5) { animation-delay: -1.5s; }
+.social-icon:nth-child(6) { animation-delay: -4.5s; }
+.social-icon:nth-type(7) { animation-delay: -7.5s; }
+.social-icon:nth-type(8) { animation-delay: -10.5s; }
+.social-icon:nth-type(9) { animation-delay: -2s; }
+.social-icon:nth-type(10) { animation-delay: -5s; }
+
+.cellular-wave {
+    animation: cellularWavePulse 3s ease-in-out infinite;
+}

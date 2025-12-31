@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNYX HRMS Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #6366f1;
+            --light-bg: #f3f4f6;
+            --dark-bg: #f9fafb;
+            --white: #ffffff;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --border-color: #d1d5db;
+            --text-color: #4b5563;
+            --heading-color: #1f2937;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: var(--white);
+            box-shadow: var(--shadow-sm);
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--heading-color);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-right .user-avatar {
+            border: 2px solid var(--primary-color);
+            border-radius: 9999px; /* full circle */
+            height: 40px;
+            width: 40px;
+        }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 280px;
+            background-color: var(--white);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            transition: width 0.3s ease-in-out;
+            height: 100%;
+            z-index: 20;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 2rem;
+        }
+
+        .nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        .nav-item i {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .nav-item:hover {
+            background-color: #e0e7ff;
+            color: var(--primary-color);
+        }
+
+        .nav-item.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+            font-weight: 600;
+        }
+        
+        .content-area {
+            flex-grow: 1;
+            padding: 2rem;
+            background-color: var(--light-bg);
+            overflow-y: auto;
+        }
+        
+        .content-section h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--heading-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .card {
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+        }
+        
+        .list-items {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--text-color);
+        }
+
+        .button {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            color: var(--white);
+            transition: background-color 0.2s;
+            border: none;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .btn-indigo {
+            background-color: var(--primary-color);
+        }
+
+        .btn-blue {
+            background-color: #3b82f6;
+        }
+
+        .btn-green {
+            background-color: #22c55e;
+        }
+
+        .btn-purple {
+            background-color: #a855f7;
+        }
+
+        .btn-yellow {
+            background-color: #eab308;
+        }
+
+        .btn-red {
+            background-color: #ef4444;
+        }
+        
+        .btn-gray {
+            background-color: #9ca3af;
+            color: var(--white);
+        }
+        
+        .btn-indigo:hover {
+            background-color: #4338ca;
+        }
+        
+        .btn-blue:hover {
+            background-color: #2563eb;
+        }
+        
+        .btn-green:hover {
+            background-color: #16a34a;
+        }
+        
+        .btn-purple:hover {
+            background-color: #7e22ce;
+        }
+        
+        .btn-yellow:hover {
+            background-color: #ca8a04;
+        }
+        
+        .btn-red:hover {
+            background-color: #dc2626;
+        }
+        
+        .btn-gray:hover {
+            background-color: #6b7280;
+        }
+
+        .kanban-board {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+        }
+
+        .kanban-column {
+            min-width: 280px;
+            max-width: 320px;
+            background-color: var(--dark-bg);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .kanban-column h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--heading-color);
+            margin-bottom: 0.75rem;
+        }
+
+        .applicant-card {
+            background-color: var(--white);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            cursor: grab;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .applicant-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .applicant-card .status-tag {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .status-tag.new {
+            background-color: #fef3c7;
+            color: #b45309;
+        }
+
+        .status-tag.screening {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-tag.interview {
+            background-color: #f3e8ff;
+            color: #6b21a8;
+        }
+
+        .status-tag.offer {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-tag.rejected {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 0.75rem;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: #9ca3af;
+        }
+
+        .close-button:hover {
+            color: #4b5563;
+        }
+
+        .form-label {
+            display: block;
+            color: var(--text-color);
+            font-size: 0.875rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input, .form-select, textarea {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border-color);
+            border-radius: 0.25rem;
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            color: var(--text-color);
+            line-height: 1.25;
+            background-color: var(--white);
+        }
+
+        .form-input:focus, .form-select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 1px var(--primary-color);
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .btn-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .btn-container-space-between {
+            justify-content: space-between;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table thead th {
+            padding: 0.75rem 1.5rem;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background-color: #f9fafb;
+        }
+
+        .data-table tbody tr {
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .data-table tbody tr:hover {
+            background-color: var(--dark-bg);
+        }
+
+        .data-table tbody td {
+            padding: 1rem 1.5rem;
+            font-size: 0.875rem;
+            color: var(--text-color);
+            white-space: nowrap;
+        }
+        
+        .data-table a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .data-table a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .data-table .actions-cell .button {
+            width: auto;
+            margin-top: 0;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        
+        .resume-placeholder, .chart-placeholder {
+            height: 12rem;
+            background-color: #e5e7eb;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            text-align: center;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .custom-alert {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            background-color: #10b981;
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 1001;
+        }
+        
+        .custom-alert .close-btn {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.25rem;
+            cursor: pointer;
+            margin-left: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 0;
+                overflow: hidden;
+                position: absolute;
+                height: 100%;
+                box-shadow: none;
+            }
+            .sidebar.open {
+                width: 280px;
+                position: absolute;
+                height: 100%;
+                overflow-y: auto;
+                box-shadow: var(--shadow-md);
+            }
+            .header h1 {
+                font-size: 1.25rem;
+            }
+            .content-area {
+                padding: 1rem;
+            }
+            .mobile-toggle-btn {
+                display: block;
+            }
+            .kanban-board {
+                flex-direction: column;
+            }
+        }
+        @media (min-width: 769px) {
+            .mobile-toggle-btn {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-left">
+            <button id="sidebarToggle" class="mobile-toggle-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1>DNYX HRMS</h1>
+        </div>
+        <div class="header-right">
+            <span>Welcome, HR Admin!</span>
+            <img src="https://placehold.co/40x40/cbd5e1/4b5563?text=HR" alt="User Avatar" class="user-avatar">
+        </div>
+    </header>
+
+    <div class="main-container">
+        <nav id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <h2>Navigation</h2>
+            </div>
+            <ul class="nav-list">
+                <li><a href="#" class="nav-item active" data-target="dashboard"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                <li><a href="#" class="nav-item" data-target="applicants"><i class="fas fa-user-friends"></i><span>Applicants</span></a></li>
+                <li><a href="#" class="nav-item" data-target="employees"><i class="fas fa-users"></i><span>Employees</span></a></li>
+                <li><a href="#" class="nav-item" data-target="reporting"><i class="fas fa-chart-line"></i><span>Reporting & Analytics</span></a></li>
+                <li><a href="#" class="nav-item" data-target="settings"><i class="fas fa-cog"></i><span>Settings</span></a></li>
+            </ul>
+        </nav>
+
+        <main class="content-area">
+            <section id="dashboard" class="content-section">
+                <h2>Dashboard Overview</h2>
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>Recent Applicants</h3>
+                        <ul class="list-items">
+                            <li class="list-item"><span>John Doe - Software Engineer</span><span style="font-size: 0.875rem; color: #6b7280;">2 hours ago</span></li>
+                            <li class="list-item"><span>Jane Smith - UI/UX Designer</span><span style="font-size: 0.875rem; color: #6b7280;">5 hours ago</span></li>
+                            <li class="list-item"><span>Alice Johnson - Data Analyst</span><span style="font-size: 0.875rem; color: #6b7280;">1 day ago</span></li>
+                        </ul>
+                        <button class="button btn-indigo" data-target-section="applicants">View All Applicants</button>
+                    </div>
+                    <div class="card">
+                        <h3>Upcoming Interviews (Today)</h3>
+                        <ul class="list-items">
+                            <li class="list-item"><span>John Doe - 10:00 AM</span><span style="font-size: 0.875rem; color: #6b7280;">HR Round</span></li>
+                            <li class="list-item"><span>Alice Johnson - 2:30 PM</span><span style="font-size: 0.875rem; color: #6b7280;">Technical Round</span></li>
+                        </ul>
+                        <button class="button btn-blue" id="scheduleInterviewDashboardBtn">View Full Calendar</button>
+                    </div>
+                    <div class="card">
+                        <h3>Application Status</h3>
+                        <div class="list-items">
+                            <div class="list-item"><span>New Applications:</span><span style="font-weight: 700; color: #4f46e5;">15</span></div>
+                            <div class="list-item"><span>Interview Scheduled:</span><span style="font-weight: 700; color: #3b82f6;">8</span></div>
+                            <div class="list-item"><span>Approved:</span><span style="font-weight: 700; color: #22c55e;">3</span></div>
+                            <div class="list-item"><span>Rejected:</span><span style="font-weight: 700; color: #ef4444;">5</span></div>
+                        </div>
+                        <p style="font-size: 0.875rem; color: #6b7280; margin-top: 1rem;">Visual chart placeholder here.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Quick Actions</h3>
+                    <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+                        <button class="button btn-green"><i class="fas fa-plus-circle"></i> New Job Posting</button>
+                        <button class="button btn-purple" id="scheduleInterviewDashboardBtn2"><i class="fas fa-calendar-alt"></i> Schedule Interview</button>
+                        <button class="button btn-yellow"><i class="fas fa-file-alt"></i> Generate Certificate</button>
+                    </div>
+                </div>
+            </section>
+            <section id="applicants" class="content-section hidden">
+                <h2>Applicant Management</h2>
+                <div class="card">
+                    <input type="text" placeholder="Search applicants..." class="form-input" style="margin-bottom: 1rem;">
+                    <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+                        <select class="form-select">
+                            <option value="">Filter by Status</option>
+                            <option value="new">New</option>
+                            <option value="interviewed">Interview Scheduled</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                        <select class="form-select">
+                            <option value="">Filter by Job Title</option>
+                            <option value="se">Software Engineer</option>
+                            <option value="uiux">UI/UX Designer</option>
+                        </select>
+                        <button class="button btn-indigo" style="margin-top: 0;">Apply Filters</button>
+                    </div>
+                </div>
+                <div class="card" style="margin-top: 1rem;">
+                    <h3>Applicant Workflow (Kanban View)</h3>
+                    <div class="kanban-board">
+                        <div class="kanban-column" id="kanban-new">
+                            <h4>New Applications (5)</h4>
+                            <div class="kanban-card-container">
+                                <div class="applicant-card" data-applicant-id="1">
+                                    <p style="font-weight: 500; color: #1f2937;">David Lee</p>
+                                    <p style="font-size: 0.875rem; color: #4b5563;">Junior Developer</p>
+                                    <span class="status-tag new">New</span>
+                                </div>
+                                <div class="applicant-card" data-applicant-id="2">
+                                    <p style="font-weight: 500; color: #1f2937;">Sarah Chen</p>
+                                    <p style="font-size: 0.875rem; color: #4b5563;">Product Manager</p>
+                                    <span class="status-tag new">New</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kanban-column" id="kanban-screening">
+                            <h4>Screening (3)</h4>
+                            <div class="kanban-card-container">
+                                <div class="applicant-card" data-applicant-id="3">
+                                    <p style="font-weight: 500; color: #1f2937;">Emily White</p>
+                                    <p style="font-size: 0.875rem; color: #4b5563;">Senior Designer</p>
+                                    <span class="status-tag screening">Screening</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kanban-column" id="kanban-interview">
+                            <h4>Interview Scheduled (2)</h4>
+                            <div class="kanban-card-container">
+                                <div class="applicant-card" data-applicant-id="4">
+                                    <p style="font-weight: 500; color: #1f2937;">Michael Brown</p>
+                                    <p style="font-size: 0.875rem; color: #4b5563;">DevOps Engineer</p>
+                                    <span class="status-tag interview">Interview</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kanban-column" id="kanban-offer">
+                            <h4>Offer Extended (1)</h4>
+                            <div class="kanban-card-container">
+                                <div class="applicant-card" data-applicant-id="5">
+                                    <p style="font-weight: 500; color: #1f2937;">Jessica Green</p>
+                                    <p style="font-size: 0.875rem; color: #4b5563;">Marketing Specialist</p>
+                                    <span class="status-tag offer">Offer</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kanban-column" id="kanban-rejected">
+                            <h4>Rejected (3)</h4>
+                            <div class="kanban-card-container">
+                                <div class="applicant-card" data-applicant-id="6">
+                                    <p style="font-weight: 500; color: #1f2937;">Robert King</p>
+                                    <p style="font-size: 0.875rem; color: #4b5563;">QA Tester</p>
+                                    <span class="status-tag rejected">Rejected</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="applicantDetailsPage" class="card hidden">
+                    <h3>Applicant Details: <span id="applicantNameDetail"></span></h3>
+                    <div class="card-grid">
+                        <div>
+                            <h4>Personal & Application Info</h4>
+                            <p><strong>Name:</strong> <span id="detailName"></span></p>
+                            <p><strong>Email:</strong> <span id="detailEmail"></span></p>
+                            <p><strong>Phone:</strong> <span id="detailPhone"></span></p>
+                            <p><strong>Job Applied For:</strong> <span id="detailJob"></span></p>
+                            <p><strong>Application Date:</strong> <span id="detailDate"></span></p>
+                            <p><strong>Current Status:</strong> <span id="detailStatus" style="font-weight: 700;"></span></p>
+                            <h4 style="margin-top: 1.5rem;">Communication Log</h4>
+                            <ul class="list-items" style="border: 1px solid #d1d5db; padding: 0.75rem; border-radius: 0.375rem; background-color: #f9fafb; font-size: 0.875rem;">
+                                <li>[2025-08-01 10:30 AM] - Application Received Confirmation</li>
+                                <li>[2025-08-05 02:15 PM] - Interview Scheduled Email (Round 1)</li>
+                            </ul>
+                            <button class="button btn-gray" style="background-color: #e5e7eb; color: #4b5563;">Send Custom Email</button>
+                            <h4 style="margin-top: 1.5rem;">Internal Notes</h4>
+                            <textarea class="form-input" rows="4" placeholder="Add internal notes or interview feedback here..."></textarea>
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom: 0.75rem;">Resume Preview</h4>
+                            <div class="resume-placeholder">
+                                <p>Resume PDF Preview Placeholder</p>
+                            </div>
+                            <div class="button-group" style="margin-top: 1rem;">
+                                <button class="button btn-blue" style="width: auto;">Download Resume</button>
+                                <button class="button btn-blue" style="width: auto;">View Other Documents</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btn-container" style="justify-content: flex-end; margin-top: 2rem;">
+                        <button class="button btn-indigo" style="width: auto; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600;" id="scheduleInterviewBtn">Schedule Interview</button>
+                        <button class="button btn-red" style="width: auto; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600;" id="rejectApplicantBtn">Reject</button>
+                    </div>
+                    <button class="button btn-gray" style="width: auto; margin-top: 1rem;" id="backToApplicants">Back to Applicants List</button>
+                </div>
+            </section>
+            <section id="employees" class="content-section hidden">
+                <h2>Employee Directory</h2>
+                <div class="card">
+                    <input type="text" placeholder="Search employees..." class="form-input" style="margin-bottom: 1rem;">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Department</th>
+                                    <th>Role</th>
+                                    <th>Joining Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="employeeTableBody">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="employeeProfilePage" class="card hidden">
+                    <h3>Employee Profile: <span id="employeeNameDetail"></span></h3>
+                    <div class="card-grid">
+                        <div>
+                            <h4 style="margin-bottom: 0.75rem;">Personal Details</h4>
+                            <p><strong>Email:</strong> <span id="employeeEmail"></span></p>
+                            <p><strong>Phone:</strong> <span id="employeePhone"></span></p>
+                            <p><strong>Address:</strong> <span id="employeeAddress"></span></p>
+                            <h4 style="margin-top: 1.5rem;">Employment Details</h4>
+                            <p><strong>Department:</strong> <span id="employeeDepartment"></span></p>
+                            <p><strong>Role:</strong> <span id="employeeRole"></span></p>
+                            <p><strong>Joining Date:</strong> <span id="employeeJoiningDate"></span></p>
+                            <p><strong>Reporting Manager:</strong> <span id="employeeManager"></span></p>
+                            <h4 style="margin-top: 1.5rem;">Training & Certifications</h4>
+                            <ul class="list-items" id="employeeCertifications"></ul>
+                            <button class="button btn-green" id="generateCertEmployeeBtn">Generate New Certificate</button>
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom: 0.75rem;">Documents</h4>
+                            <ul class="list-items">
+                                <li>Offer Letter (PDF)</li>
+                                <li>Employment Contract (PDF)</li>
+                                <li>Aadhar Card (Image)</li>
+                                <li>PAN Card (Image)</li>
+                            </ul>
+                            <button class="button btn-blue">Upload Document</button>
+                            <h4 style="margin-top: 1.5rem;">Performance History (Placeholder)</h4>
+                            <p>Performance reviews and feedback will be displayed here.</p>
+                        </div>
+                    </div>
+                    <button class="button btn-gray" style="margin-top: 2rem; width: auto;" id="backToEmployees">Back to Employee Directory</button>
+                </div>
+            </section>
+            <section id="reporting" class="content-section hidden">
+                <h2>Reporting & Analytics</h2>
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>Application Source Report</h3>
+                        <div class="chart-placeholder">
+                            <p>Bar Chart: Applications by Source (LinkedIn, Website, Referrals)</p>
+                        </div>
+                        <p style="margin-top: 1rem; font-size: 0.875rem; color: #6b7280;">Insights: Identify top performing recruitment channels.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Time-to-Hire Report</h3>
+                        <div class="chart-placeholder">
+                            <p>Line Chart: Average Time from Application to Offer Acceptance</p>
+                        </div>
+                        <p style="margin-top: 1rem; font-size: 0.875rem; color: #6b7280;">Insights: Optimize hiring process efficiency.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Applicant Funnel Analysis</h3>
+                        <div class="chart-placeholder">
+                            <p>Funnel Chart: Candidate Dropout Rates by Stage</p>
+                        </div>
+                        <p style="margin-top: 1rem; font-size: 0.875rem; color: #6b7280;">Insights: Pinpoint bottlenecks in the recruitment funnel.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Employee Turnover Report</h3>
+                        <div class="chart-placeholder">
+                            <p>Bar Chart: Attrition Rates by Department/Tenure</p>
+                        </div>
+                        <p style="margin-top: 1rem; font-size: 0.875rem; color: #6b7280;">Insights: Understand and address retention challenges.</p>
+                    </div>
+                </div>
+                <button class="button btn-indigo">Create Custom Report</button>
+            </section>
+            <section id="settings" class="content-section hidden">
+                <h2>System Settings</h2>
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>Role-Based Access Control (RBAC)</h3>
+                        <p>Manage user roles and permissions within the HRMS portal.</p>
+                        <ul class="list-items">
+                            <li>Admin: Full access</li>
+                            <li>HR Manager: View all, edit most, manage approvals</li>
+                            <li>Recruiter: Manage applicants, schedule interviews</li>
+                        </ul>
+                        <button class="button btn-blue">Manage Roles</button>
+                    </div>
+                    <div class="card">
+                        <h3>Email Template Management</h3>
+                        <p>Customize automated email templates for various HR workflows.</p>
+                        <ul class="list-items">
+                            <li>Interview Schedule Email</li>
+                            <li>Rejection Email</li>
+                            <li>Offer Letter Email</li>
+                            <li>Certification Generation Email</li>
+                        </ul>
+                        <button class="button btn-blue">Edit Templates</button>
+                    </div>
+                    <div class="card">
+                        <h3>Job Posting Management</h3>
+                        <p>Create, edit, and publish job postings to be linked to the DNYX public website.</p>
+                        <button class="button btn-blue">Manage Job Postings</button>
+                    </div>
+                    <div class="card">
+                        <h3>Custom Fields</h3>
+                        <p>Add custom fields to Applicant and Employee profiles.</p>
+                        <button class="button btn-blue">Configure Custom Fields</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="scheduleInterviewModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" data-modal-id="scheduleInterviewModal">&times;</span>
+            <h3>Schedule Interview</h3>
+            <form>
+                <div class="form-group">
+                    <label for="modalApplicantName" class="form-label">Applicant Name:</label>
+                    <input type="text" id="modalApplicantName" class="form-input" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="interviewDate" class="form-label">Date:</label>
+                    <input type="date" id="interviewDate" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="interviewTime" class="form-label">Time:</label>
+                    <input type="time" id="interviewTime" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="interviewRound" class="form-label">Interview Round:</label>
+                    <select id="interviewRound" class="form-select">
+                        <option value="phone">Phone Screen</option>
+                        <option value="technical">Technical Interview</option>
+                        <option value="hr">HR Interview</option>
+                        <option value="final">Final Interview</option>
+                    </select>
+                </div>
+                <div class="btn-container btn-container-space-between">
+                    <button type="button" class="button btn-indigo" style="width: auto;" id="scheduleInterviewConfirmBtn">Schedule & Send Email</button>
+                    <button type="button" class="button btn-gray" style="width: auto;" data-modal-id="scheduleInterviewModal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="rejectionModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" data-modal-id="rejectionModal">&times;</span>
+            <h3>Confirm Rejection</h3>
+            <p>Are you sure you want to reject <span id="rejectApplicantName" style="font-weight: 700;"></span>?</p>
+            <p style="font-size: 0.875rem; color: #6b7280; margin-top: 1rem; margin-bottom: 1.5rem;">A rejection email will be automatically sent to the applicant, and their status will be updated to "Rejected".</p>
+            <div class="btn-container btn-container-space-between">
+                <button type="button" class="button btn-red" style="width: auto;" id="confirmRejectBtn">Confirm Reject</button>
+                <button type="button" class="button btn-gray" style="width: auto;" data-modal-id="rejectionModal">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <div id="generateCertificateModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" data-modal-id="generateCertificateModal">&times;</span>
+            <h3>Generate Certificate</h3>
+            <form>
+                <div class="form-group">
+                    <label for="certEmployeeName" class="form-label">Employee Name:</label>
+                    <input type="text" id="certEmployeeName" class="form-input" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="certificateType" class="form-label">Certificate Type:</label>
+                    <select id="certificateType" class="form-select">
+                        <option value="completion">Course Completion</option>
+                        <option value="achievement">Achievement Award</option>
+                        <option value="appreciation">Letter of Appreciation</option>
+                        <option value="custom">Custom Certificate</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="certificateDate" class="form-label">Date Issued:</label>
+                    <input type="date" id="certificateDate" class="form-input">
+                </div>
+                <div class="btn-container btn-container-space-between">
+                    <button type="button" class="button btn-green" style="width: auto;" id="generateCertConfirmBtn">Generate & Send</button>
+                    <button type="button" class="button btn-gray" style="width: auto;" data-modal-id="generateCertificateModal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const navItems = document.querySelectorAll('.nav-item');
+        const contentSections = document.querySelectorAll('.content-section');
+        const applicantDetailsPage = document.getElementById('applicantDetailsPage');
+        const employeeProfilePage = document.getElementById('employeeProfilePage');
+        const scheduleInterviewModal = document.getElementById('scheduleInterviewModal');
+        const rejectionModal = document.getElementById('rejectionModal');
+        const generateCertificateModal = document.getElementById('generateCertificateModal');
+        const kanbanCards = document.querySelectorAll('.applicant-card');
+        const employeeTableBody = document.getElementById('employeeTableBody');
+        const dashboardViewApplicantsBtn = document.querySelector('[data-target-section="applicants"]');
+        const scheduleInterviewDashboardBtn = document.getElementById('scheduleInterviewDashboardBtn');
+        const scheduleInterviewDashboardBtn2 = document.getElementById('scheduleInterviewDashboardBtn2');
+        const backToApplicantsBtn = document.getElementById('backToApplicants');
+        const backToEmployeesBtn = document.getElementById('backToEmployees');
+        const scheduleInterviewBtn = document.getElementById('scheduleInterviewBtn');
+        const rejectApplicantBtn = document.getElementById('rejectApplicantBtn');
+        const scheduleInterviewConfirmBtn = document.getElementById('scheduleInterviewConfirmBtn');
+        const confirmRejectBtn = document.getElementById('confirmRejectBtn');
+        const generateCertConfirmBtn = document.getElementById('generateCertConfirmBtn');
+        const closeButtons = document.querySelectorAll('.close-button');
+        const generateCertEmployeeBtn = document.getElementById('generateCertEmployeeBtn');
+
+        const dummyApplicants = {
+            '1': { name: 'David Lee', email: 'david.lee@example.com', phone: '9876543210', job: 'Junior Developer', date: '2025-08-01', status: 'New' },
+            '2': { name: 'Sarah Chen', email: 'sarah.chen@example.com', phone: '9876543211', job: 'Product Manager', date: '2025-07-28', status: 'New' },
+            '3': { name: 'Emily White', email: 'emily.white@example.com', phone: '9876543212', job: 'Senior Designer', date: '2025-07-25', status: 'Screening' },
+            '4': { name: 'Michael Brown', email: 'michael.brown@example.com', phone: '9876543213', job: 'DevOps Engineer', date: '2025-07-20', status: 'Interview Scheduled' },
+            '5': { name: 'Jessica Green', email: 'jessica.green@example.com', phone: '9876543214', job: 'Marketing Specialist', date: '2025-07-18', status: 'Offer Extended' },
+            '6': { name: 'Robert King', email: 'robert.king@example.com', phone: '9876543215', job: 'QA Tester', date: '2025-07-10', status: 'Rejected' }
+        };
+
+        const dummyEmployees = [
+            { id: 1, name: 'Alice Brown', department: 'Engineering', role: 'Lead Software Engineer', joiningDate: '2020-01-15', email: 'alice.brown@dnyx.in', phone: '+91 98765 43210', address: '123 Main St, Chennai, India', manager: 'Jane Doe', certifications: ['Certified Scrum Master (2022)', 'Advanced React Development (2023)'] },
+            { id: 2, name: 'Bob Johnson', department: 'Marketing', role: 'Marketing Manager', joiningDate: '2021-03-01', email: 'bob.johnson@dnyx.in', phone: '+91 98765 43211', address: '456 Second Ave, Chennai, India', manager: 'Mark Smith', certifications: ['Digital Marketing Professional (2021)'] }
+        ];
+
+        let selectedApplicantId = null;
+        let selectedEmployeeId = null;
+
+        function showSection(targetId) {
+            contentSections.forEach(section => {
+                section.classList.add('hidden');
+            });
+            const targetSection = document.getElementById(targetId);
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+            }
+            applicantDetailsPage.classList.add('hidden');
+            employeeProfilePage.classList.add('hidden');
+        }
+
+        navItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                navItems.forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+                const targetId = this.dataset.target;
+                showSection(targetId);
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('open');
+                }
+            });
+        });
+
+        showSection('dashboard');
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+
+        document.addEventListener('click', (event) => {
+            if (window.innerWidth <= 768 && sidebar.classList.contains('open') && !sidebar.contains(event.target) && !sidebarToggle.contains(event.target)) {
+                sidebar.classList.remove('open');
+            }
+        });
+
+        function showApplicantDetails(applicantId) {
+            selectedApplicantId = applicantId;
+            const applicant = dummyApplicants[applicantId];
+
+            if (applicant) {
+                document.getElementById('applicantNameDetail').textContent = applicant.name;
+                document.getElementById('detailName').textContent = applicant.name;
+                document.getElementById('detailEmail').textContent = applicant.email;
+                document.getElementById('detailPhone').textContent = applicant.phone;
+                document.getElementById('detailJob').textContent = applicant.job;
+                document.getElementById('detailDate').textContent = applicant.date;
+                document.getElementById('detailStatus').textContent = applicant.status;
+
+                document.getElementById('modalApplicantName').value = applicant.name;
+                document.getElementById('rejectApplicantName').textContent = applicant.name;
+
+                document.getElementById('applicants').classList.add('hidden');
+                applicantDetailsPage.classList.remove('hidden');
+            }
+        }
+
+        kanbanCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const applicantId = this.dataset.applicantId;
+                showApplicantDetails(applicantId);
+            });
+        });
+
+        function hideApplicantDetails() {
+            applicantDetailsPage.classList.add('hidden');
+            document.getElementById('applicants').classList.remove('hidden');
+        }
+
+        function renderEmployeeTable() {
+            employeeTableBody.innerHTML = '';
+            dummyEmployees.forEach(employee => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><a href="#" class="view-employee-btn" data-employee-id="${employee.id}">${employee.name}</a></td>
+                    <td>${employee.department}</td>
+                    <td>${employee.role}</td>
+                    <td>${employee.joiningDate}</td>
+                    <td class="actions-cell">
+                        <button class="button btn-blue" style="width: auto; margin-top: 0; padding: 0.5rem 1rem;" data-employee-id="${employee.id}">View</button>
+                        <button class="button btn-green" style="width: auto; margin-top: 0; padding: 0.5rem 1rem;" data-employee-id="${employee.id}">Certify</button>
+                    </td>
+                `;
+                employeeTableBody.appendChild(row);
+            });
+            addEmployeeEventListeners();
+        }
+
+        function addEmployeeEventListeners() {
+            document.querySelectorAll('.view-employee-btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const employeeId = this.dataset.employeeId;
+                    showEmployeeProfile(employeeId);
+                });
+            });
+
+            document.querySelectorAll('.certify-employee-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const employeeId = this.dataset.employeeId;
+                    const employee = dummyEmployees.find(e => e.id == employeeId);
+                    if (employee) {
+                        document.getElementById('certEmployeeName').value = employee.name;
+                        openModal('generateCertificateModal');
+                    }
+                });
+            });
+        }
+
+        renderEmployeeTable();
+
+        function showEmployeeProfile(employeeId) {
+            const employee = dummyEmployees.find(e => e.id == employeeId);
+            if (employee) {
+                selectedEmployeeId = employeeId;
+                document.getElementById('employeeNameDetail').textContent = employee.name;
+                document.getElementById('employeeEmail').textContent = employee.email;
+                document.getElementById('employeePhone').textContent = employee.phone;
+                document.getElementById('employeeAddress').textContent = employee.address;
+                document.getElementById('employeeDepartment').textContent = employee.department;
+                document.getElementById('employeeRole').textContent = employee.role;
+                document.getElementById('employeeJoiningDate').textContent = employee.joiningDate;
+                document.getElementById('employeeManager').textContent = employee.manager;
+
+                const certificationsList = document.getElementById('employeeCertifications');
+                certificationsList.innerHTML = '';
+                employee.certifications.forEach(cert => {
+                    const li = document.createElement('li');
+                    li.textContent = cert;
+                    certificationsList.appendChild(li);
+                });
+
+                document.getElementById('employees').classList.add('hidden');
+                employeeProfilePage.classList.remove('hidden');
+            }
+        }
+
+        function hideEmployeeProfile() {
+            employeeProfilePage.classList.add('hidden');
+            document.getElementById('employees').classList.remove('hidden');
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        scheduleInterviewBtn.addEventListener('click', () => {
+            if (selectedApplicantId) {
+                const applicant = dummyApplicants[selectedApplicantId];
+                document.getElementById('modalApplicantName').value = applicant.name;
+                openModal('scheduleInterviewModal');
+            } else {
+                alert('Please select an applicant first.');
+            }
+        });
+
+        if (scheduleInterviewDashboardBtn) {
+            scheduleInterviewDashboardBtn.addEventListener('click', () => {
+                document.getElementById('modalApplicantName').value = 'Select an applicant from the list';
+                openModal('scheduleInterviewModal');
+            });
+        }
+        if (scheduleInterviewDashboardBtn2) {
+             scheduleInterviewDashboardBtn2.addEventListener('click', () => {
+                document.getElementById('modalApplicantName').value = 'Select an applicant from the list';
+                openModal('scheduleInterviewModal');
+            });
+        }
+
+        rejectApplicantBtn.addEventListener('click', () => {
+            if (selectedApplicantId) {
+                const applicant = dummyApplicants[selectedApplicantId];
+                document.getElementById('rejectApplicantName').textContent = applicant.name;
+                openModal('rejectionModal');
+            }
+        });
+
+        closeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const modalId = this.dataset.modalId;
+                closeModal(modalId);
+            });
+        });
+
+        scheduleInterviewConfirmBtn.addEventListener('click', () => {
+            alert('Interview Scheduled and Email Sent!');
+            closeModal('scheduleInterviewModal');
+        });
+
+        confirmRejectBtn.addEventListener('click', () => {
+            alert('Applicant Rejected and Email Sent!');
+            closeModal('rejectionModal');
+            hideApplicantDetails();
+        });
+
+        generateCertConfirmBtn.addEventListener('click', () => {
+            alert('Certificate Generated and Email Sent!');
+            closeModal('generateCertificateModal');
+        });
+
+        backToApplicantsBtn.addEventListener('click', hideApplicantDetails);
+        backToEmployeesBtn.addEventListener('click', hideEmployeeProfile);
+        
+        if (generateCertEmployeeBtn) {
+            generateCertEmployeeBtn.addEventListener('click', () => {
+                const employee = dummyEmployees.find(e => e.id == selectedEmployeeId);
+                if(employee) {
+                    document.getElementById('certEmployeeName').value = employee.name;
+                    openModal('generateCertificateModal');
+                }
+            });
+        }
+        
+        function alert(message) {
+            const existingAlert = document.getElementById('customAlert');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+
+            const alertDiv = document.createElement('div');
+            alertDiv.id = 'customAlert';
+            alertDiv.className = 'custom-alert';
+            alertDiv.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                <span>${message}</span>
+                <button class="close-btn">&times;</button>
+            `;
+            document.body.appendChild(alertDiv);
+            
+            alertDiv.querySelector('.close-btn').addEventListener('click', () => {
+                alertDiv.remove();
+            });
+
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+        }
+
+        window.addEventListener('click', function(event) {
+            if (event.target === scheduleInterviewModal) {
+                closeModal('scheduleInterviewModal');
+            }
+            if (event.target === rejectionModal) {
+                closeModal('rejectionModal');
+            }
+            if (event.target === generateCertificateModal) {
+                closeModal('generateCertificateModal');
+            }
+        });
+
+        dashboardViewApplicantsBtn.addEventListener('click', () => {
+            showSection('applicants');
+            navItems.forEach(nav => nav.classList.remove('active'));
+            document.querySelector('[data-target="applicants"]').classList.add('active');
+        });
+    </script>
+</body>
+</html>

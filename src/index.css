@@ -1,0 +1,835 @@
+@import "tailwindcss";
+@import "./HeroSVG.css";
+
+/*
+ * Extracted styles for Homepage.jsx and HeroSVG.jsx
+ * from the provided index.css
+ */
+
+/* ========================================================================== */
+/* 1. Base HTML and Theme Variables for Homepage */
+/* ========================================================================== */
+
+/* Apply a global font size for 90% zoom effect to the root HTML element */
+html {
+    font-size: 90%;
+}
+
+/* Base styles and CSS variables for the light theme */
+:root, .light-theme {
+    /* General colors */
+    --gradient-bg-from: #ffffff; /* Tailwind white */
+    --gradient-bg-to: #f9fafb; /* Tailwind gray-50 */
+    --color-text-primary: #111827; /* Tailwind gray-900 */
+    --color-text-secondary: #4b5563; /* Tailwind gray-600 */
+    --color-section-bg: #ffffff; /* Tailwind white */
+    --color-border: #e5e7eb; /* Tailwind gray-200 (general border) */
+
+    /* Panel and Card colors */
+    --color-card-bg: rgba(255, 255, 255, 0.25); /* semi-white glass */ /* Tailwind white, adjusted for glass effect */
+    --color-card-border:  rgba(173, 170, 170, 0.4); /* Tailwind gray-200 */
+    --color-card-text:  #222;/* Tailwind gray-800 */
+    --color-feature-icon-bg-from: #3b82f6; /* Tailwind blue-600 */
+    --color-feature-icon-bg-to: #9333ea; /* Tailwind purple-600 */
+    --color-feature-text: #1f2937; /* Tailwind gray-800 */
+    --color-feature-border: #bfdbfe; /* Tailwind blue-200 */
+    --color-dropdown-bg: #ffffff; /* Tailwind white */
+    --color-dropdown-border: #e5e7eb; /* Tailwind gray-200 */
+    --color-dropdown-text: #1f2937; /* Tailwind gray-800 */
+    --color-dropdown-hover-bg: #f3f4f6; /* Tailwind gray-100 */
+
+    /* Button colors */
+    --gradient-button-primary-from: #3b82f6; /* Tailwind blue-600 */
+    --gradient-button-primary-to: #8b5cf6; /* Tailwind violet-500 */
+    --gradient-button-primary-txt-from: #3b82f6; /* Tailwind purple-800 */
+    --gradient-button-primary-txt-to: #8b5cf6;  /* Tailwind purple-800 */
+    --color-button-primary-text: #ffffff; /* Tailwind white */
+    --gradient-button-primary-hover-from: #2563eb; /* Tailwind blue-700 */
+    --gradient-button-primary-hover-to: #7c3aed; /* Tailwind violet-600 */
+
+    /* Header and Navigation colors */
+    --color-header-bg: #ffffff; /* Tailwind white */
+    --color-header-text: #111827; /* Tailwind gray-900 */
+    --color-nav-link-text: #4b5563; /* Tailwind gray-700 */
+    --color-nav-link-hover-text: #2563eb; /* Tailwind blue-600 */
+    --color-logo-text: #000000; /* Tailwind black for logo text */
+
+    /* Podcast icon colors (explicitly defined for conditional class) */
+    --color-podcast-icon-light: #2563eb; /* Tailwind blue-600 */
+
+    /* Footer colors */
+    --color-footer-text: #4b5563; /* Tailwind gray-600 */
+
+    /* Chat specific highlight (used in Homepage hero section) */
+    --gradient-highlight-from: var(--gradient-button-primary-txt-from);
+    --gradient-highlight-to: var(--gradient-button-primary-txt-to);
+
+    /* SVG specific colors for light theme */
+    --gradient-svg-bg-from: #f0f4f8; /* Tailwind slate-50 */
+    --gradient-svg-bg-to: #d9e2ec; /* Tailwind slate-200 */
+    --color-svg-stroke-primary: #FFFFFF; /* Tailwind white strokes for mic lines, cellular waves */
+    --color-svg-fill-primary: #FFFFFF;   /* Tailwind white fill for post circles */
+    --color-svg-fill-secondary: #EEEEEE; /* Tailwind gray-100 fill for post rectangles */
+
+}
+
+/* Dark theme variables */
+.dark-theme {
+    /* General colors */
+    --gradient-bg-from: #0f172a; /* Slate-900 for a consistent dark base */
+    --gradient-bg-to: #0f172a; /* Consistent dark base */
+    --color-text-primary: #f1f5f9; /* Slate-50 */
+    --color-text-secondary: #94a3b8; /* Slate-400 */
+    --color-section-bg: #1e293b; /* Slate-800 */
+    --color-border: #334155; /* Slate-700 */
+
+    /* Panel and Card colors */
+    --color-card-bg: rgba(15,23,41, 0.7); /* Slate-800, adjusted for glass effect */
+    --color-card-border: #334155; /* Slate-700 */
+    --color-card-text: #e2e8f0; /* Slate-200 */
+    --color-feature-icon-bg-from: #0ea5e9; /* Cyan-500 from Transcript */
+    --color-feature-icon-bg-to: #00c6ff; /* Cyan-400 from Transcript */
+    --color-feature-text: #e2e8f0; /* Slate-200 */
+    --color-feature-border: #334155; /* Slate-700 */
+    --color-dropdown-bg: #1e293b; /* Slate-800 */
+    --color-dropdown-border: #334155; /* Slate-700 */
+    --color-dropdown-text: #e2e8f0; /* Slate-200 */
+    --color-dropdown-hover-bg: #334155; /* Slate-700 */
+
+    /* Button colors */
+    --gradient-button-primary-from: #00c6ff; /* Transcript's blue accent */
+    --gradient-button-primary-to: #0072ff;  /* Transcript's darker blue accent */
+    --gradient-button-primary-txt-from: #00c6ff;
+    --gradient-button-primary-txt-to: #0072ff;
+    --color-button-primary-text: #ffffff; /* White */
+    --gradient-button-primary-hover-from: #0072ff;
+    --gradient-button-primary-hover-to: #00c6ff;
+
+    /* Header and Navigation colors */
+    --color-header-bg: #1e293b; /* Slate-800 */
+    --color-header-text: #f1f5f9; /* Slate-50 */
+    --color-nav-link-text: #94a3b8; /* Slate-400 */
+    --color-nav-link-hover-text: #ffffff; /* White */
+    --color-logo-text: #f1f5f9; /* Slate-50 */
+
+    /* Podcast icon colors */
+    --color-podcast-icon-dark: #00c6ff; /* Cyan accent */
+
+    /* Footer colors */
+    --color-footer-text: #94a3b8; /* Slate-400 */
+
+    /* Chat specific highlight */
+    --gradient-highlight-from: #00c6ff; /* Cyan from Transcript */
+    --gradient-highlight-to: #0072ff; /* Darker blue */
+
+    /* SVG specific colors for dark theme */
+    --gradient-svg-bg-from: #1e293b; /* Slate-800 */
+    --gradient-svg-bg-to: #0f172a; /* Slate-900 */
+    --color-svg-stroke-primary: #e2e8f0; /* Slate-200 */
+    --color-svg-fill-primary: #e2e8f0;   /* Slate-200 */
+    --color-svg-fill-secondary: #94a3b8; /* Slate-400 */
+}
+
+/* Common CSS Variables (used by both themes) */
+:root {
+  /* Backgrounds */
+  --color-bg-start: #1A1A2E; /* Custom Dark Blue/Purple */
+  --color-bg-end: #0F0F1A;   /* Custom Even darker Blue/Purple */
+
+  /* Gradients & Highlights */
+  --color-chat-gradient-start: #8E2DE2; /* Custom Purple */
+  --color-chat-gradient-end: #4A00E0;   /* Custom Darker Purple */
+
+  /* Glow Effect Colors */
+  --color-glow-start: #8E2DE2; /* Custom Matching chat gradient start */
+  --color-glow-end: #00BFFF;   /* Custom A bright blue for contrast */
+}
+
+/* ========================================================================== */
+/* 2. Custom utility classes referencing CSS variables (used by Homepage.jsx) */
+/* ========================================================================== */
+
+.theme-bg-gradient {
+    background: linear-gradient(to bottom right, var(--gradient-bg-from), var(--gradient-bg-to));
+}
+
+.text-primary-color {
+    color: var(--color-text-primary);
+}
+
+.text-secondary-color {
+    color: var(--color-text-secondary);
+}
+
+.section-bg {
+    background-color: var(--color-section-bg);
+}
+
+.card-bg {
+  background-color: var(--color-card-bg);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid var(--color-card-border);
+  border-radius: 16px;
+}
+
+.card-border {
+  border-color: var(--color-card-border);
+}
+
+.card-text {
+  color: var(--color-card-text);
+}
+
+.icon-color {
+    color: var(--color-icon); /* This might be defined as white globally, used for SVG fills */
+}
+
+.header-bg {
+    background-color: var(--color-header-bg);
+}
+
+.header-text {
+    color: var(--color-header-text);
+}
+
+.nav-link-text {
+    color: var(--color-nav-link-text);
+}
+
+.nav-link-hover-text:hover {
+    color: var(--color-nav-link-hover-text);
+}
+
+.border-color {
+    border-color: var(--color-border);
+}
+
+.feature-icon-bg-gradient {
+    background: linear-gradient(to right, var(--color-feature-icon-bg-from), var(--color-feature-icon-bg-to));
+}
+
+.feature-text-color {
+    color: var(--color-feature-text);
+}
+
+.feature-border {
+    border-color: var(--color-feature-border);
+}
+
+.dropdown-bg {
+    background-color: var(--color-dropdown-bg);
+}
+
+.dropdown-border {
+    border-color: var(--color-dropdown-border);
+}
+
+.dropdown-text {
+    color: var(--color-dropdown-text);
+}
+
+.dropdown-hover-bg:hover {
+    background-color: var(--color-dropdown-hover-bg);
+}
+
+.footer-text {
+    color: var(--color-footer-text);
+}
+
+.btn-primary-gradient {
+    background: linear-gradient(to right, var(--gradient-button-primary-from), var(--gradient-button-primary-to));
+}
+.btn-primary-gradient:hover {
+    background: linear-gradient(to right, var(--gradient-button-primary-hover-from), var(--gradient-button-primary-hover-to));
+}
+
+.btn-primary-text {
+    color: var(--color-button-primary-text);
+}
+
+.chat-gradient-highlight {
+    background: linear-gradient(to right, var(--gradient-highlight-from), var(--gradient-highlight-to));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent; /* Fallback for browsers not supporting background-clip: text */
+}
+
+.podcast-icon-light {
+    color: var(--color-podcast-icon-light);
+}
+
+.podcast-icon-dark {
+    color: var(--color-podcast-icon-dark);
+}
+
+/* ========================================================================== */
+/* 3. Base Body & Layout Styles (general but affects Homepage) */
+/* ========================================================================== */
+
+body {
+  background: linear-gradient(to bottom right, var(--color-bg-start), var(--color-bg-end));
+  color: var(--color-primary-text);
+}
+
+/* Scrollbar Hiding (general but affects Homepage) */
+*::-webkit-scrollbar {
+    display: none;
+}
+* {
+    -ms-overflow-style: none;   /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* --- ADDED FOR post.jsx and related components --- */
+/* Custom utility classes (relevant to these components) */
+
+.panel-bg {
+    background-color: var(--color-panel-bg);
+}
+
+.panel-border {
+    border-color: var(--color-panel-border);
+}
+
+.btn-secondary-bg {
+    background-color: var(--color-button-secondary-bg);
+}
+
+.btn-secondary-text {
+    color: var(--color-button-secondary-text);
+}
+
+.btn-secondary-hover-bg:hover {
+    background-color: var(--color-button-secondary-hover-bg);
+}
+
+.btn-secondary-hover-text:hover {
+    color: var(--color-button-secondary-hover-text);
+}
+
+.chat-header-text {
+    color: var(--color-chat-header-text);
+}
+
+.chat-input-panel-bg {
+    background-color: var(--color-chat-input-panel-bg);
+}
+
+.chat-input-field-bg {
+    background-color: var(--color-chat-input-field-bg);
+}
+
+.input-bg {
+    background-color: var(--color-input-bg);
+}
+
+.input-border {
+    border-color: var(--color-input-border);
+}
+
+.input-focus-ring:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--color-input-focus-ring);
+}
+
+.input-text-color {
+    color: var(--color-input-text);
+}
+
+.send-button-bg {
+    background-color: var(--color-send-button-bg);
+}
+
+.user-bubble-icon-bg-solid {
+    background-color: var(--color-user-bubble-icon-bg-solid);
+}
+.user-bubble-icon-bg-gradient {
+    background: linear-gradient(to right, var(--gradient-user-bubble-icon-from), var(--gradient-user-bubble-icon-to));
+}
+
+.ai-bubble-icon-bg-gradient {
+    background: linear-gradient(to right, var(--gradient-ai-bubble-icon-from), var(--gradient-ai-bubble-icon-to));
+}
+
+.chat-bubble-user-bg {
+    background-color: var(--color-chat-bubble-user-bg);
+}
+
+.chat-bubble-ai-bg {
+    background-color: var(--color-chat-bubble-ai-bg);
+}
+
+.message-bg {
+    background-color: var(--color-message-bg);
+}
+
+.message-text {
+    color: var(--color-message-text);
+}
+
+.message-border {
+    border-color: var(--color-message-border);
+}
+
+.suggestion-tag-bg {
+    background-color: var(--color-suggestion-tag-bg);
+}
+
+.suggestion-tag-text {
+    color: var(--color-suggestion-tag-text);
+}
+
+.suggestion-tag-border {
+    border-color: var(--color-suggestion-tag-border);
+}
+
+.suggestion-tag-hover-bg:hover {
+    background-color: var(--color-suggestion-tag-hover-bg);
+}
+
+.logo-text-color {
+    color: var(--color-logo-text);
+}
+
+.checkbox-checked-bg:checked {
+    background-color: var(--color-checkbox-checked-bg);
+    border-color: var(--color-checkbox-checked-bg);
+}
+
+.checkbox-bg {
+    background-color: var(--color-checkbox-bg);
+}
+
+.checkbox-border {
+    border-color: var(--color-checkbox-border);
+}
+
+.modal-bg {
+    background-color: var(--color-modal-bg);
+}
+
+.modal-text {
+    color: var(--color-modal-text);
+}
+
+.modal-border {
+    border-color: var(--color-modal-border);
+}
+
+.modal-button-bg {
+    background-color: var(--color-modal-button-bg);
+}
+
+.modal-button-hover-bg:hover {
+    background-color: var(--color-modal-button-hover-bg);
+}
+
+.modal-button-text {
+    color: var(--color-modal-button-text);
+}
+
+.modal-close-button-hover:hover {
+    background-color: var(--color-modal-close-button-hover);
+}
+
+.modal-info-text {
+    color: var(--color-modal-info-text);
+}
+
+/* BrowserFrame specific classes */
+.browser-frame-bg {
+    background-color: var(--color-layer-outer-bg);
+    border-color: var(--color-layer-outer-border);
+}
+
+.browser-title-address-bar-bg {
+    background-color: var(--color-tab-nav-bg);
+    border-color: var(--color-tab-nav-border);
+}
+
+.browser-address-input-bg {
+    background-color: var(--color-input-bg);
+}
+
+.browser-address-text-primary {
+    color: var(--color-text-primary);
+}
+
+.browser-address-text-secondary {
+    color: var(--color-text-secondary);
+}
+
+.browser-content-bg {
+    background-color: var(--color-generated-content-bg);
+    border-color: var(--color-generated-content-border);
+}
+
+/* Onboarding Section classes (used in post.jsx conditional rendering) */
+.welcome-section-bg {
+    background-color: var(--color-welcome-section-bg);
+}
+.onboarding-card-border {
+    border-color: var(--color-onboarding-card-border);
+}
+.onboarding-step-card {
+    border-width: 2px; /* From border-2 */
+}
+
+
+/* Tab Navigation classes (used within BrowserFrame in post.jsx) */
+.tab-nav-border {
+    border-color: var(--color-tab-nav-border);
+}
+.tab-nav-bg {
+    background-color: var(--color-tab-nav-bg);
+}
+
+/* Scrollbar Hiding (global but impacts scrollable areas in post.jsx) */
+/* These are duplicated; keeping for clarity based on your previous filtered output. */
+/* Ideally, these should only be defined once in a global section. */
+*::-webkit-scrollbar {
+    display: none;
+}
+* {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.custom-scrollbar::-webkit-scrollbar {
+    display: block;
+    width: 8px;
+    height: 8px;
+}
+.custom-scrollbar {
+    -ms-overflow-style: auto;
+    scrollbar-width: auto;
+}
+
+/* ========================================================================== */
+/* 4. MARKDOWN STYLES - CRITICAL FOR REACT-MARKDOWN */
+/* ========================================================================== */
+
+/* Prose styling for markdown content */
+.prose {
+    color: var(--color-text-primary);
+    max-width: none;
+    line-height: 1.7;
+}
+
+/* Headings */
+.prose h1 {
+    font-size: 2.25rem;
+    font-weight: 560;
+    line-height: 1.2;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: var(--color-text-primary);
+    border-bottom: 2px solid var(--color-border);
+    padding-bottom: 0.5rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.prose h2 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-top: 1.75rem;
+    margin-bottom: 0.875rem;
+    color: var(--color-text-primary);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 0.375rem;
+    
+}
+
+.prose h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--color-text-primary);
+}
+
+.prose h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-top: 1.25rem;
+    margin-bottom: 0.625rem;
+    color: var(--color-text-primary);
+}
+
+.prose h5 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-text-primary);
+}
+
+.prose h6 {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-text-secondary);
+}
+
+/* Paragraphs */
+.prose p {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    color: var(--color-text-primary);
+    line-height: 1.7;
+}
+
+/* Links */
+.prose a {
+    color: #3b82f6;
+    text-decoration: underline;
+    text-decoration-color: rgba(59, 130, 246, 0.4);
+    transition: all 0.2s ease;
+}
+
+.prose a:hover {
+    color: #2563eb;
+    text-decoration-color: #2563eb;
+}
+
+/* Lists */
+.prose ul {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+    list-style-type: disc;
+}
+
+.prose ol {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+    list-style-type: decimal;
+}
+
+.prose li {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-text-primary);
+    line-height: 1.6;
+}
+
+.prose ul > li {
+    padding-left: 0.375rem;
+}
+
+.prose ol > li {
+    padding-left: 0.375rem;
+}
+
+/* Nested lists */
+.prose ul ul,
+.prose ul ol,
+.prose ol ul,
+.prose ol ol {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Blockquotes */
+.prose blockquote {
+    border-left: 4px solid var(--color-border);
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: var(--color-text-secondary);
+    background-color: rgba(var(--color-text-secondary), 0.05);
+    padding: 1rem;
+    border-radius: 0.375rem;
+}
+
+/* Code blocks */
+.prose pre {
+    background-color: #1e293b !important;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin: 1.5rem 0;
+    overflow-x: auto;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.prose pre code {
+    background: transparent !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    font-size: inherit;
+    color: #f8fafc;
+    font-family: inherit;
+}
+
+/* Inline code */
+.prose code {
+    background-color: rgba(var(--color-text-secondary), 0.1);
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.875em;
+    color: var(--color-text-primary);
+    border: 1px solid rgba(var(--color-border), 0.5);
+}
+
+/* Horizontal rules */
+.prose hr {
+    border: none;
+    height: 1px;
+    background-color: var(--color-border);
+    margin: 2rem 0;
+}
+
+/* Tables */
+.prose table {
+    width: 100%;
+    margin: 1.5rem 0;
+    border-collapse: collapse;
+    border: 1px solid var(--color-border);
+    border-radius: 0.375rem;
+    overflow: hidden;
+}
+
+.prose th {
+    background-color: var(--color-section-bg);
+    padding: 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.prose td {
+    padding: 0.75rem;
+    border-bottom: 1px solid rgba(var(--color-border), 0.5);
+    color: var(--color-text-primary);
+}
+
+.prose tr:last-child td {
+    border-bottom: none;
+}
+
+/* Strong and emphasis */
+.prose strong {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.prose em {
+    font-style: italic;
+    color: var(--color-text-primary);
+}
+
+/* Images */
+.prose img {
+    max-width: 100%;
+    height: auto;
+    margin: 1.5rem 0;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-border);
+}
+
+/* Dark theme specific overrides */
+.dark-theme .prose pre {
+    background-color: #0f172a !important;
+}
+
+.dark-theme .prose code {
+    background-color: rgba(148, 163, 184, 0.1);
+    border-color: rgba(148, 163, 184, 0.2);
+}
+
+.dark-theme .prose a {
+    color: #60a5fa;
+}
+
+.dark-theme .prose a:hover {
+    color: #93c5fd;
+}
+
+/* Custom Audio Player Styles */
+.custom-audio-player-bluish audio::-webkit-media-controls-panel {
+    background-color: #1e293b; /* bgCard */
+    color: #f1f5f9; /* textPrimary */
+    border-radius: 0.75rem; /* rounded-xl */
+}
+
+.custom-audio-player-bluish audio::-webkit-media-controls-play-button,
+.custom-audio-player-bluish audio::-webkit-media-controls-current-time-display,
+.custom-audio-player-bluish audio::-webkit-media-controls-time-remaining-display,
+.custom-audio-player-bluish audio::-webkit-media-controls-timeline,
+.custom-audio-player-bluish audio::-webkit-media-controls-volume-slider,
+.custom-audio-player-bluish audio::-webkit-media-controls-volume-button {
+    color: #f1f5f9; /* textPrimary */
+}
+
+.custom-audio-player-bluish audio::-webkit-media-controls-timeline {
+    background-color: #334155; /* borderDefault */
+}
+
+.custom-audio-player-bluish audio::-webkit-media-controls-play-button:hover,
+.custom-audio-player-bluish audio::-webkit-media-controls-volume-button:hover {
+    background-color: #334155; /* bgCardHover */
+}
+
+/* Dark Theme Audio Player Styles */
+.custom-audio-player-dark audio::-webkit-media-controls-panel {
+    background-color: #333333; /* cardBg */
+    color: #f1f5f9; /* textPrimary */
+    border-radius: 0.75rem;
+}
+
+.custom-audio-player-dark audio::-webkit-media-controls-play-button,
+.custom-audio-player-dark audio::-webkit-media-controls-current-time-display,
+.custom-audio-player-dark audio::-webkit-media-controls-time-remaining-display,
+.custom-audio-player-dark audio::-webkit-media-controls-timeline,
+.custom-audio-player-dark audio::-webkit-media-controls-volume-slider,
+.custom-audio-player-dark audio::-webkit-media-controls-volume-button {
+    color: #f1f5f9;
+}
+
+.custom-audio-player-dark audio::-webkit-media-controls-timeline {
+    background-color: #606060; /* cardBorder */
+}
+
+.custom-audio-player-dark audio::-webkit-media-controls-play-button:hover,
+.custom-audio-player-dark audio::-webkit-media-controls-volume-button:hover {
+    background-color: #4a4a4a; /* slightly lighter hover */
+}
+
+/* Light Theme Audio Player Styles */
+.custom-audio-player-light audio::-webkit-media-controls-panel {
+    background-color: #ffffff; /* bg-white */
+    color: #1a202c; /* text-gray-900 */
+    border-radius: 0.75rem;
+}
+
+.custom-audio-player-light audio::-webkit-media-controls-play-button,
+.custom-audio-player-light audio::-webkit-media-controls-current-time-display,
+.custom-audio-player-light audio::-webkit-media-controls-time-remaining-display,
+.custom-audio-player-light audio::-webkit-media-controls-timeline,
+.custom-audio-player-light audio::-webkit-media-controls-volume-slider,
+.custom-audio-player-light audio::-webkit-media-controls-volume-button {
+    color: #1a202c;
+}
+
+.custom-audio-player-light audio::-webkit-media-controls-timeline {
+    background-color: #e2e8f0; /* border-gray-200 */
+}
+
+.custom-audio-player-light audio::-webkit-media-controls-play-button:hover,
+.custom-audio-player-light audio::-webkit-media-controls-volume-button:hover {
+    background-color: #f0f0f0;
+}
