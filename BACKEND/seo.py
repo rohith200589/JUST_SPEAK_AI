@@ -21,7 +21,7 @@ import uuid
 from graphql.error import GraphQLError
 
 # --- Gemini API Key (Declared at the top) ---
-GEMINI_API_KEY_VALUE = "AIzaSyCqWuv0AHNjrfFZygUceprVkxWE-_1jyqc" # Replace with your actual Gemini API key
+GEMINI_API_KEY_VALUE = os.environ.get("GEMINI_API_KEY", "AIzaSyCqWuv0AHNjrfFZygUceprVkxWE-_1jyqc")
 
 # --- Configuration ---
 class Config:
@@ -833,9 +833,14 @@ app.add_url_rule(
 ) #
 
 
+@app.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({"status": "ok", "service": "seo_service"}), 200
+
 @app.route('/')
 def index():
     return "Welcome to the SEO Assistant Backend! Access the GraphQL API at /graphql." #
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8000,use_reloader=False) #
+    port = int(os.environ.get("PORT", 8000))
+    app.run(debug=True, port=port, use_reloader=False) #

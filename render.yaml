@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: api-service
+    runtime: python
+    buildCommand: pip install -r BACKEND/requirements.txt
+    startCommand: gunicorn --worker-class eventlet -w 1 --chdir BACKEND server:app
+    envVars:
+      - key: PORT
+        value: 5000
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: GEMINI_API_KEY
+        sync: false
+
+  - type: web
+    name: post-service
+    runtime: python
+    buildCommand: pip install -r BACKEND/requirements.txt
+    startCommand: gunicorn --chdir BACKEND post:app
+    envVars:
+      - key: PORT
+        value: 5050
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: GEMINI_API_KEY
+        sync: false
+
+  - type: web
+    name: seo-service
+    runtime: python
+    buildCommand: pip install -r BACKEND/requirements.txt
+    startCommand: gunicorn --chdir BACKEND seo:app
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: GEMINI_API_KEY
+        sync: false

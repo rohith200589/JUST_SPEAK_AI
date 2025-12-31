@@ -1,5 +1,5 @@
 # Import necessary libraries
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_graphql import GraphQLView
 import graphene
@@ -45,8 +45,15 @@ from docx import Document # pip install python-docx
 app = Flask(__name__)
 CORS(app)
 
-# Initialize Flask-SocketIO AFTER the app
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading') # Using threading for simplicity
+
+@app.route('/')
+def index():
+    return "Flask backend is running!"
+
+@app.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({"status": "ok", "service": "main_server"}), 200
 
 
 # Define the GraphQL types
@@ -281,7 +288,9 @@ def transcribe_audio_with_faster_whisper(audio_path: str) -> (str, list):
 
 # Your existing API key (replace with your actual key if it's still a placeholder here)
 # You should retrieve this from environment variables in a production setup
-API_KEY = os.environ.get("GEMINI_API_KEY", "AIzaSyCajcPzzVJCvRSBFtSwuv-Fu-Pr6lUNqBk") # Replace with your actual Gemini API Key
+API_KEY = os.environ.get("GEMINI_API_KEY") # Prioritize environment variable
+if not API_KEY:
+    API_KEY = "AIzaSyCajcPzzVJCvRSBFtSwuv-Fu-Pr6lUNqBk" # Fallback
 
 # Configurable Gemini model name (environment override for backwards/forwards compatibility)
 GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
@@ -1486,11 +1495,9 @@ app.add_url_rule(
     )
 )
 
-@app.route('/')
-def index():
-    return "Flask backend is running!"
 
 if __name__ == '__main__':
-    print(f"Running Flask app with SocketIO on port 5000")
+    port = int(os.environ.get("PORT", 5000))
+    print(f"Running Flask app with SocketIO on port {port}")
     # Set allow_unsafe_werkzeug=True only for development, disable in production
-    socketio.run(app, debug=True, port=5000, allow_unsafe_werkzeug=True)
+    socketio.run(app, debug=True, host='0.0.0.0', port=port, use_reloader=False, allow_unsafe_werkzeug=True)

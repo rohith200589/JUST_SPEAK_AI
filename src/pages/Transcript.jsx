@@ -8,6 +8,7 @@ import io from 'socket.io-client';
 import { useNavigate, useLocation, Navigate } from 'react-router-dom';
 import GeneratingView from '../components/transcript/GeneratingView';
 import { setGlobalTheme, getGlobalTheme, subscribeToThemeChange } from '../utils/globalTheme';
+import { API_URL as BACKEND_URL } from '../config';
 
 const TranscriptPage = ({ transcriptHistory, setTranscriptHistory }) => {
     const navigate = useNavigate();
@@ -107,7 +108,6 @@ const TranscriptPage = ({ transcriptHistory, setTranscriptHistory }) => {
     const copilotChatContainerRef = useRef(null);
     const activeVideoPlayerRef = useRef(null);
 
-    const BACKEND_URL = 'http://127.0.0.1:5000';
     const socket = useRef(null);
 
     // Helper function to send GraphQL requests to the backend (initialized before use)
@@ -183,7 +183,7 @@ const TranscriptPage = ({ transcriptHistory, setTranscriptHistory }) => {
         { name: 'Transcript', icon: <FileText size={16} /> },
         { name: 'Generate', icon: <Sparkles size={16} /> },
     ];
-    
+
     // --- CONSOLIDATED THEME DEFINITIONS ---
     const commonColors = {
         blueText: theme === 'dark' ? 'text-[#0ea5e9]' : 'text-cyan-500',
@@ -194,10 +194,10 @@ const TranscriptPage = ({ transcriptHistory, setTranscriptHistory }) => {
     const darkThemeColors = {
         quickbg: 'bg-[#1e293b]',
         appBackground: 'bg-[#0f172a]',
-        app2Background:'bg-[#0f172a]',
+        app2Background: 'bg-[#0f172a]',
         panelBackground: 'bg-[#1e293b]',
         panelBorder: 'border-[#334155]',
-        border:'border-[#334155]',
+        border: 'border-[#334155]',
         cardBg: 'bg-[#1e293b]',
         cardBorder: 'border-[#334155]',
         headerBackground: 'bg-gray-800',
@@ -208,7 +208,7 @@ const TranscriptPage = ({ transcriptHistory, setTranscriptHistory }) => {
         hoverBg: 'hover:bg-[#334155]',
         textPrimary: 'text-[#f1f5f9]',
         textSecondary: 'text-[#94a3b8]',
-        textSecondary2:'text-gray-300',
+        textSecondary2: 'text-gray-300',
         buttonPrimaryBg: 'bg-[#0ea5e9]',
         buttonPrimaryHoverBg: 'hover:bg-[#0284c7]',
         buttonDeleteBg: 'bg-red-600',
@@ -231,8 +231,8 @@ const TranscriptPage = ({ transcriptHistory, setTranscriptHistory }) => {
         chatBotText: 'text-[#f1f5f9]',
         chatInputBg: 'bg-[#1e293b]/50',
         chatInputBorder: 'ring-white/20',
-        
-        
+
+
         loaderColor: 'text-[#0ea5e9]',
         welcomeIconColor: 'text-[#00c6ff]',
         welcomeHeadline: 'bg-gradient-to-r from-cyan-400 to-blue-400 text-transparent bg-clip-text',
@@ -283,11 +283,11 @@ const TranscriptPage = ({ transcriptHistory, setTranscriptHistory }) => {
         keywordIconColor: 'text-[#94a3b8]',
         keywordHoverBg: 'hover:bg-[#2e3a4d]',
         keywordActiveBorder: 'border-[#0ea5e9]',
-        
+
     };
 
     const lightThemeColors = {
-        quickbg:'bg-white',
+        quickbg: 'bg-white',
         appBackground: 'bg-[#f9f9f9]',
         app2Background: 'bg-gray-100',
         panelBackground: 'bg-[#ffffff]',
@@ -296,7 +296,7 @@ const TranscriptPage = ({ transcriptHistory, setTranscriptHistory }) => {
         cardBorder: 'border-gray-300',
         headerBackground: 'bg-gray-100/10',
         headerBorder: 'border-gray-300',
-        border:'border-gray-50',
+        border: 'border-gray-50',
         headerText: 'text-gray-900',
         headingColor: 'text-gray-800',
         iconColor: 'text-gray-500',
@@ -318,7 +318,7 @@ const TranscriptPage = ({ transcriptHistory, setTranscriptHistory }) => {
         tabActiveText: 'text-violet-500 ',
         tabInactiveText: 'text-gray-900',
         tabHoverText: 'hover:text-gray-700',
-        tabActiveBorder: 'border-purple-600', 
+        tabActiveBorder: 'border-purple-600',
         tabActiveBackground: 'bg-blue-500',
         chatUserBg: 'bg-cyan-500',
         chatUserText: 'text-white',
@@ -340,7 +340,7 @@ const TranscriptPage = ({ transcriptHistory, setTranscriptHistory }) => {
         uploadSelectedFileBorder: 'border-gray-300',
         uploadSelectedFileText: 'text-gray-700',
         uploadSelectedFileHover: 'hover:text-red-600',
-        uploadCardShadow: 'shadow-md shadow-gray-400/70' ,
+        uploadCardShadow: 'shadow-md shadow-gray-400/70',
         uploadCardLiftedGlow: 'shadow-2xl shadow-purple-400/70 transform scale-[1.02] translate-y-[-10px] ring-2 ring-purple-100',
         splitterColor: 'bg-gray-400',
         guidingCardBg: 'bg-white',
@@ -377,7 +377,7 @@ const TranscriptPage = ({ transcriptHistory, setTranscriptHistory }) => {
         keywordHoverBg: 'hover:bg-gray-100',
         keywordActiveBorder: 'border-cyan-500',
     };
-    
+
     const currentThemeColors = theme === 'dark' ? { ...darkThemeColors, ...commonColors } : { ...lightThemeColors, ...commonColors };
     // --- END CONSOLIDATED THEME DEFINITIONS ---
 
@@ -445,11 +445,11 @@ const TranscriptPage = ({ transcriptHistory, setTranscriptHistory }) => {
 
             if (transcriptContent) setTranscript(transcriptContent);
             if (transcriptTimestamps) setTranscriptTimestamps(transcriptTimestamps);
-            
+
             // Check if navSummaryContent is a valid object and set the state
             if (navSummaryContent && typeof navSummaryContent === 'object' && navSummaryContent.title) {
-                 setSummaryContent(navSummaryContent);
-                 setTranscriptViewTab('summary');
+                setSummaryContent(navSummaryContent);
+                setTranscriptViewTab('summary');
             }
 
 
@@ -586,7 +586,7 @@ const TranscriptPage = ({ transcriptHistory, setTranscriptHistory }) => {
             setProgress(0);
             setDetailedProgressStatus('');
             setIsTranscribing(false);
-                // analysisData cleared (no analysis tab)
+            // analysisData cleared (no analysis tab)
             setKeyInsights(null);
         }
     }, []);
@@ -750,7 +750,7 @@ const TranscriptPage = ({ transcriptHistory, setTranscriptHistory }) => {
                     setSummaryContent({ title: null, subheader: null, points: [] });
                     setTranscriptViewTab('transcript');
                 }
-                
+
                 const newEntry = {
                     id: Date.now(),
                     title: historyEntryTitle,
@@ -783,18 +783,18 @@ const TranscriptPage = ({ transcriptHistory, setTranscriptHistory }) => {
     }, [activeTab, uploadedFile, youtubeVideoId, videoUrl, BACKEND_URL, sendGraphQLRequest, navigate, setRightPanelTab, setTranscriptViewTab, setTranscriptHistory]);
 
     const handleCopilotRequest = useCallback(async (userMessageText) => {
-    if (!userMessageText.trim()) return;
+        if (!userMessageText.trim()) return;
 
-    const userMessage = { id: Date.now(), sender: 'user', text: userMessageText };
-    setCopilotMessages(prev => [...prev, userMessage]);
-    setChatInput('');
-    setIsThinking(true);
+        const userMessage = { id: Date.now(), sender: 'user', text: userMessageText };
+        setCopilotMessages(prev => [...prev, userMessage]);
+        setChatInput('');
+        setIsThinking(true);
 
-    setDetailedProgressStatus('Sending chat command to AI...');
-    setProgress(0);
+        setDetailedProgressStatus('Sending chat command to AI...');
+        setProgress(0);
 
-    try {
-        const query = `
+        try {
+            const query = `
             mutation ProcessChatCommand($userMessage: String!, $currentTranscript: String, $youtubeUrl: String) {
                 processChatCommand(userMessage: $userMessage, currentTranscript: $currentTranscript, youtubeUrl: $youtubeUrl) {
                     aiChatMessage
@@ -802,69 +802,69 @@ const TranscriptPage = ({ transcriptHistory, setTranscriptHistory }) => {
                 }
             }
         `;
-        const variables = {
-            userMessage: userMessageText,
-            currentTranscript: transcript,
-            youtubeUrl: youtubeVideoId ? `youtube.com/${youtubeVideoId}` : null // Corrected URL format
-        };
-
-        const response = await fetch(`${BACKEND_URL}/graphql`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                query,
-                variables,
-            }),
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error('GraphQL HTTP Error for chat:', response.status, errorData);
-            throw new Error(`GraphQL network error: ${response.status} - ${errorData.errors ? errorData.errors.map(e => e.message).join(', ') : 'Unknown error'}`);
-        }
-
-        const result = await response.json();
-
-        if (result.errors) {
-            console.error('GraphQL Errors:', result.errors);
-            const errorMessage = result.errors.map(err => err.message).join(', ');
-            const botErrorMsg = { id: Date.now() + 1, sender: 'bot', text: `Error: ${errorMessage}` };
-            setCopilotMessages(prev => [...prev, botErrorMsg]);
-            setDetailedProgressStatus(`Chat error: ${errorMessage}`);
-            return;
-        }
-
-        const { aiChatMessage, processedContent } = result.data.processChatCommand;
-
-        const botTextMessage = { id: Date.now() + 1, sender: 'bot', text: aiChatMessage };
-        setCopilotMessages(prev => [...prev, botTextMessage]);
-
-        if (processedContent) {
-            const contentTitle = userMessageText.length > 30 ? userMessageText.substring(0, 27) + "..." : userMessageText;
-            const botMainContentMessage = {
-                id: Date.now() + 2,
-                sender: 'bot',
-                text: processedContent,
-                isMainContent: true,
-                title: `Result for: "${contentTitle}"`,
-                timestamp: new Date().toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+            const variables = {
+                userMessage: userMessageText,
+                currentTranscript: transcript,
+                youtubeUrl: youtubeVideoId ? `youtube.com/${youtubeVideoId}` : null // Corrected URL format
             };
-            setCopilotMessages(prev => [...prev, botMainContentMessage]);
+
+            const response = await fetch(`${BACKEND_URL}/graphql`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    query,
+                    variables,
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('GraphQL HTTP Error for chat:', response.status, errorData);
+                throw new Error(`GraphQL network error: ${response.status} - ${errorData.errors ? errorData.errors.map(e => e.message).join(', ') : 'Unknown error'}`);
+            }
+
+            const result = await response.json();
+
+            if (result.errors) {
+                console.error('GraphQL Errors:', result.errors);
+                const errorMessage = result.errors.map(err => err.message).join(', ');
+                const botErrorMsg = { id: Date.now() + 1, sender: 'bot', text: `Error: ${errorMessage}` };
+                setCopilotMessages(prev => [...prev, botErrorMsg]);
+                setDetailedProgressStatus(`Chat error: ${errorMessage}`);
+                return;
+            }
+
+            const { aiChatMessage, processedContent } = result.data.processChatCommand;
+
+            const botTextMessage = { id: Date.now() + 1, sender: 'bot', text: aiChatMessage };
+            setCopilotMessages(prev => [...prev, botTextMessage]);
+
+            if (processedContent) {
+                const contentTitle = userMessageText.length > 30 ? userMessageText.substring(0, 27) + "..." : userMessageText;
+                const botMainContentMessage = {
+                    id: Date.now() + 2,
+                    sender: 'bot',
+                    text: processedContent,
+                    isMainContent: true,
+                    title: `Result for: "${contentTitle}"`,
+                    timestamp: new Date().toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+                };
+                setCopilotMessages(prev => [...prev, botMainContentMessage]);
+            }
+            setDetailedProgressStatus('Chat response received.');
+            setProgress(100);
+        } catch (error) {
+            console.error('Failed to send chat command to backend:', error);
+            const botErrorMsg = { id: Date.now() + 1, sender: 'bot', text: `I apologize, but I couldn't process your request due to a network error or an issue with the AI: ${error.message}` };
+            setCopilotMessages(prev => [...prev, botErrorMsg]);
+            setDetailedProgressStatus(`Chat processing failed: ${error.message}`);
+            setProgress(0);
+        } finally {
+            setIsThinking(false);
         }
-        setDetailedProgressStatus('Chat response received.');
-        setProgress(100);
-    } catch (error) {
-        console.error('Failed to send chat command to backend:', error);
-        const botErrorMsg = { id: Date.now() + 1, sender: 'bot', text: `I apologize, but I couldn't process your request due to a network error or an issue with the AI: ${error.message}` };
-        setCopilotMessages(prev => [...prev, botErrorMsg]);
-        setDetailedProgressStatus(`Chat processing failed: ${error.message}`);
-        setProgress(0);
-    } finally {
-        setIsThinking(false);
-    }
-}, [transcript, youtubeVideoId, BACKEND_URL]);
+    }, [transcript, youtubeVideoId, BACKEND_URL]);
 
     const handleNewChat = useCallback(() => {
         setCopilotMessages([]);
@@ -876,7 +876,7 @@ const TranscriptPage = ({ transcriptHistory, setTranscriptHistory }) => {
 
     const handleSeek = useCallback((timeInSeconds) => {
         if (activeVideoPlayerRef.current) {
-           if (youtubeVideoId) {
+            if (youtubeVideoId) {
                 const youtubeSrc = `https://www.youtube.com/embed/${youtubeVideoId}?start=${Math.floor(timeInSeconds)}&autoplay=1`;
                 activeVideoPlayerRef.current.src = youtubeSrc;
             } else if (uploadedFile && activeVideoPlayerRef.current instanceof HTMLMediaElement) {
@@ -977,7 +977,7 @@ const TranscriptPage = ({ transcriptHistory, setTranscriptHistory }) => {
             }
         }
     };
-    
+
 
     const renderContent = () => {
         if (isInitialView) {
@@ -1006,7 +1006,7 @@ const TranscriptPage = ({ transcriptHistory, setTranscriptHistory }) => {
                 />
             );
         } else if (isGeneratingView) {
-             return (
+            return (
                 <GeneratingView
                     theme={theme}
                     progress={progress}
@@ -1020,7 +1020,7 @@ const TranscriptPage = ({ transcriptHistory, setTranscriptHistory }) => {
                     isRedirecting={isRedirecting}
                     currentThemeColors={currentThemeColors}
                 />
-             );
+            );
         }
         else if (isGeneratedView) {
             if (!transcript && !youtubeVideoId && !uploadedFile) {
@@ -1070,7 +1070,7 @@ const TranscriptPage = ({ transcriptHistory, setTranscriptHistory }) => {
                     leftPanelView={leftPanelView}
                     setUploadedFile={setUploadedFile}
                     activeVideoPlayerRef={activeVideoPlayerRef}
-                    
+
                     retryAnalysis={retryAnalysis}
                     handleSeek={handleSeek}
                     searchTerm={searchTerm}
@@ -1078,10 +1078,10 @@ const TranscriptPage = ({ transcriptHistory, setTranscriptHistory }) => {
                     searchResults={searchResults}
                     resetApp={resetApp}
                     handleNewChat={handleNewChat}
-                    
+
                     keyInsights={keyInsights}
                     isTranscribing={isTranscribing}
-                    isThinking={isThinking} 
+                    isThinking={isThinking}
                 />
             );
         }

@@ -23,6 +23,10 @@ from flask_graphql import GraphQLView
 app = Flask(__name__)
 CORS(app)
 
+@app.route('/health')
+def health_check():
+    return jsonify({"status": "ok", "service": "post_service"}), 200
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 DEVTO_API_KEY = "juq3WdgTVqkGYWJ8kj41LvWj"
@@ -30,7 +34,7 @@ if not DEVTO_API_KEY:
     print("WARNING: DEVTO_API_KEY environment variable not set. Dev.to posting will not work.")
 
 # --- Gemini API Setup ---
-GEMINI_API_KEY = "AIzaSyCqWuv0AHNjrfFZygUceprVkxWE-_1jyqc"
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "AIzaSyCqWuv0AHNjrfFZygUceprVkxWE-_1jyqc")
 if not GEMINI_API_KEY:
     logging.error("GEMINI_API_KEY is not set.")
     raise RuntimeError("GEMINI_API_KEY is not set.")
@@ -511,4 +515,5 @@ app.add_url_rule(
 
 # --- Entry point for local development ---
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5050, debug=True, threaded=True)
+    port = int(os.environ.get("PORT", 5050))
+    app.run(host="0.0.0.0", port=port, debug=True, threaded=True)

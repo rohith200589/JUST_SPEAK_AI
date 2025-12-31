@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { FileText, Upload, MessageSquareText, Youtube, Plus, XCircle, PanelRightClose, PanelRightOpen, MonitorPlay, Send, Headphones, Wrench, Clock, PackageOpen, Mic, Video, Search, ImageIcon, Sparkles, ArrowRight, Loader2, Trash2 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTheme, useDashboard } from '../../pages/SEO.jsx';
+import { SEO_URL } from '../../config';
 
 // Internal Common Components
 const Card = ({ className, ...props }) => {
@@ -68,9 +69,8 @@ const ChatInterface = React.memo(({ messages, messagesEndRef, onExploreDashboard
             <div className="flex flex-col space-y-3 justify-end">
                 {displayMessages.map((msg) => (
                     <div key={msg.id} className={`flex ${msg.sender === 'User' ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`p-2.5 rounded-lg text-sm max-w-[80%] ${
-                            msg.sender === 'User' ? 'bg-[var(--accent-primary)] text-white' : 'bg-[var(--bg-subtle)] text-[var(--text-primary)] border border-[var(--border-default)]'
-                        }`}>
+                        <div className={`p-2.5 rounded-lg text-sm max-w-[80%] ${msg.sender === 'User' ? 'bg-[var(--accent-primary)] text-white' : 'bg-[var(--bg-subtle)] text-[var(--text-primary)] border border-[var(--border-default)]'
+                            }`}>
                             {msg.sender === 'User' ? (
                                 <ExpandableMessage text={msg.text} />
                             ) : (
@@ -224,9 +224,9 @@ const RecentGenerationsPanel = React.memo(({ toggleRightPanel }) => {
                 )}
             </CardHeader>
             <CardContent className="flex-grow overflow-y-auto space-y-3">
-                 {filteredSessions.length > 0 ? (
+                {filteredSessions.length > 0 ? (
                     <div className="flex flex-col space-y-3">
-                       {filteredSessions.slice().reverse().map((item) => (
+                        {filteredSessions.slice().reverse().map((item) => (
                             <div key={item.id} style={{ boxShadow: themeColors.itemShadow }} className="flex items-center gap-3 p-3 rounded-lg border bg-[var(--bg-card)] border-[var(--border-default)] cursor-pointer transition-colors hover:bg-[var(--bg-card-hover)]">
                                 <div className="flex items-center flex-grow" onClick={() => handleItemClick(item)}>
                                     {item.type === 'transcript' && <FileText size={18} className="text-[var(--accent-primary)] flex-shrink-0" />}
@@ -320,7 +320,7 @@ const ChatPage = React.memo(() => {
         }
     }, []);
 
-   const handleExploreDashboard = useCallback((initialData, jobId, lastUserMessage) => {
+    const handleExploreDashboard = useCallback((initialData, jobId, lastUserMessage) => {
         setIsLoadingInitialData(true);
         setIsLoadingDetailedData(true);
         currentDetailedJobIdRef.current = jobId;
@@ -386,7 +386,7 @@ const ChatPage = React.memo(() => {
                 }
                 try {
                     const query = `query GetDetailedJobResult($jobId: ID!) { getDetailedDashboardJobResult(jobId: $jobId) { jobId status relatedPostsMap { keywordName posts { title link source image } } } }`;
-                    const response = await fetch('http://localhost:8000/graphql', {
+                    const response = await fetch(`${SEO_URL}/graphql`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ query, variables: { jobId } })
@@ -482,7 +482,7 @@ const ChatPage = React.memo(() => {
 
         try {
             const mutation = `mutation SendChat($message: String!, $transcripts: [String], $files: [String], $youtube: String) { sendChatMessage( message: $message, uploadedTranscriptsContent: $transcripts, uploadedFilesContent: $files, youtubeUrlInfo: $youtube ) { jobId initialData { keywordsData { id name traffic prevTraffic trend suggestions } platformTrendsMap { platform score } primaryKeywordName } } }`;
-            const response = await fetch('http://localhost:8000/graphql', {
+            const response = await fetch(`${SEO_URL}/graphql`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

@@ -12,6 +12,7 @@ import BlogPost from '../components/post/BlogPost';
 import NewsletterPost from '../components/post/NewsletterPost';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { setGlobalTheme, getGlobalTheme, subscribeToThemeChange } from '../utils/globalTheme';
+import { POST_URL } from '../config';
 
 // Supabase Configuration
 const supabaseUrl = 'https://dpaoeuzsnswflnvzgilg.supabase.co';
@@ -36,46 +37,46 @@ const loadingMessages = [
 ];
 
 const TypewriterText = ({ theme, themeColors, colors }) => {
-  const messages = [
-    "Turn your ideas into something viral.",
-    "Upload a podcast, video, or transcript.",
-    "Watch as AI transforms it into LinkedIn posts, blogs, and newsletters.",
-    "SEO-friendly. Audience-focused. Ready to publish.",
-    "Start your journey now."
-  ];
+    const messages = [
+        "Turn your ideas into something viral.",
+        "Upload a podcast, video, or transcript.",
+        "Watch as AI transforms it into LinkedIn posts, blogs, and newsletters.",
+        "SEO-friendly. Audience-focused. Ready to publish.",
+        "Start your journey now."
+    ];
 
-  const [index, setIndex] = React.useState(0);
-  const [text, setText] = React.useState("");
-  const [isDeleting, setIsDeleting] = React.useState(false);
-  const [fadeClass, setFadeClass] = React.useState("fade-in");
+    const [index, setIndex] = React.useState(0);
+    const [text, setText] = React.useState("");
+    const [isDeleting, setIsDeleting] = React.useState(false);
+    const [fadeClass, setFadeClass] = React.useState("fade-in");
 
-  React.useEffect(() => {
-    const current = messages[index];
-    const speed = isDeleting ? 20 : 50;
+    React.useEffect(() => {
+        const current = messages[index];
+        const speed = isDeleting ? 20 : 50;
 
-    const timer = setTimeout(() => {
-      if (!isDeleting && text.length < current.length) {
-        setText(current.slice(0, text.length + 1));
-      } else if (isDeleting && text.length > 0) {
-        setText(current.slice(0, text.length - 1));
-      } else if (!isDeleting && text.length === current.length) {
-        setTimeout(() => setIsDeleting(true), 1500);
-      } else if (isDeleting && text.length === 0) {
-        setFadeClass("fade-out");
-        setTimeout(() => {
-          setIsDeleting(false);
-          setIndex((prev) => (prev + 1) % messages.length);
-          setFadeClass("fade-in");
-        }, 500);
-      }
-    }, speed);
+        const timer = setTimeout(() => {
+            if (!isDeleting && text.length < current.length) {
+                setText(current.slice(0, text.length + 1));
+            } else if (isDeleting && text.length > 0) {
+                setText(current.slice(0, text.length - 1));
+            } else if (!isDeleting && text.length === current.length) {
+                setTimeout(() => setIsDeleting(true), 1500);
+            } else if (isDeleting && text.length === 0) {
+                setFadeClass("fade-out");
+                setTimeout(() => {
+                    setIsDeleting(false);
+                    setIndex((prev) => (prev + 1) % messages.length);
+                    setFadeClass("fade-in");
+                }, 500);
+            }
+        }, speed);
 
-    return () => clearTimeout(timer);
-  }, [text, isDeleting, index, messages]);
+        return () => clearTimeout(timer);
+    }, [text, isDeleting, index, messages]);
 
-  return (
-    <section className="flex flex-col items-center justify-center h-full" style={{ overflow: "hidden" }}>
-      <style>{`
+    return (
+        <section className="flex flex-col items-center justify-center h-full" style={{ overflow: "hidden" }}>
+            <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap');
         .elegant-font {
           font-family: 'Montserrat', sans-serif;
@@ -88,20 +89,20 @@ const TypewriterText = ({ theme, themeColors, colors }) => {
         @keyframes blink { 0%, 50%, 100% { opacity: 1; } 25%, 75% { opacity: 0; } }
       `}</style>
 
-      {/* Logo Above Text */}
-      <div className="flex items-center space-x-2 mb-6 ml-10">
-        <span className="font-extrabold uppercase text-3xl" style={{ fontFamily: '"Montserrat", sans-serif' }}>Just</span>
-        <Podcast size={20} className={colors.brandPrimary} />
-        <span className="font-extrabold uppercase text-3xl" style={{ fontFamily: '"Montserrat", sans-serif' }}>Speak</span>
-      </div>
+            {/* Logo Above Text */}
+            <div className="flex items-center space-x-2 mb-6 ml-10">
+                <span className="font-extrabold uppercase text-3xl" style={{ fontFamily: '"Montserrat", sans-serif' }}>Just</span>
+                <Podcast size={20} className={colors.brandPrimary} />
+                <span className="font-extrabold uppercase text-3xl" style={{ fontFamily: '"Montserrat", sans-serif' }}>Speak</span>
+            </div>
 
-      {/* Typing Text */}
-      <h2 className={`elegant-font text-center ml-8 ${fadeClass} ${colors.text}`}>
-        {text}
-        <span className="cursor"></span>
-      </h2>
-    </section>
-  );
+            {/* Typing Text */}
+            <h2 className={`elegant-font text-center ml-8 ${fadeClass} ${colors.text}`}>
+                {text}
+                <span className="cursor"></span>
+            </h2>
+        </section>
+    );
 };
 
 const PostPage = ({ transcriptHistory }) => {
@@ -110,7 +111,7 @@ const PostPage = ({ transcriptHistory }) => {
     const navigate = useNavigate();
     const fileInputRef = useRef(null);
     const chatMessagesEndRef = useRef(null);
-    
+
     // Global theme state management
     const [theme, setTheme] = useState(getGlobalTheme());
 
@@ -143,7 +144,7 @@ const PostPage = ({ transcriptHistory }) => {
     const [youtubeFile, setYoutubeFile] = useState(null);
     const [youtubeUrlInput, setYoutubeUrlInput] = useState('');
     const [showYoutubeInput, setShowYoutubeInput] = useState(false);
-    
+
     // Generated Content State
     const [generatedContent, setGeneratedContent] = useState({
         blog: null,
@@ -160,63 +161,63 @@ const PostPage = ({ transcriptHistory }) => {
     const [isAdvancedOptionsModalOpen, setIsAdvancedOptionsModalOpen] = useState(false);
     // Corrected State Initialization
     const [generationOptions, setGenerationOptions] = useState({
-    selectedPostType: 'All',
-    All: {
-        wordCount: 600,
-        characterCount: 1500,
-        targetAudience: 'General',
-        language: 'English',
-        toneStyle: 'Professional',
-        formality: 50,
-        creativityLevel: 50,
-        focusKeywords: '',
-        keywordDensity: 1.5,
-    },
-    Blog: {
-        wordCount: 500,
-        characterCount: 0,
-        targetAudience: 'General',
-        language: 'English',
-        toneStyle: 'Informative',
-        formality: 70,
-        creativityLevel: 60,
-        focusKeywords: '',
-        keywordDensity: 1.8,
-    },
-    LinkedIn: {
-        wordCount: 100,
-        characterCount: 600,
-        targetAudience: 'Professional',
-        language: 'English',
-        toneStyle: 'Professional',
-        formality: 80,
-        creativityLevel: 40,
-        focusKeywords: '',
-        keywordDensity: 1.0,
-    },
-    Newsletter: {
-        wordCount: 50,
-        characterCount: 200,
-        targetAudience: 'Subscribers',
-        language: 'English',
-        toneStyle: 'Friendly',
-        formality: 60,
-        creativityLevel: 70,
-        focusKeywords: '',
-        keywordDensity: 1.2,
-    },
-    Twitter: {
-        wordCount: 30,
-        characterCount: 100,
-        targetAudience: 'General',
-        language: 'English',
-        toneStyle: 'Concise',
-        formality: 40,
-        creativityLevel: 80,
-        focusKeywords: '',
-        keywordDensity: 0.5,
-    },
-});
+        selectedPostType: 'All',
+        All: {
+            wordCount: 600,
+            characterCount: 1500,
+            targetAudience: 'General',
+            language: 'English',
+            toneStyle: 'Professional',
+            formality: 50,
+            creativityLevel: 50,
+            focusKeywords: '',
+            keywordDensity: 1.5,
+        },
+        Blog: {
+            wordCount: 500,
+            characterCount: 0,
+            targetAudience: 'General',
+            language: 'English',
+            toneStyle: 'Informative',
+            formality: 70,
+            creativityLevel: 60,
+            focusKeywords: '',
+            keywordDensity: 1.8,
+        },
+        LinkedIn: {
+            wordCount: 100,
+            characterCount: 600,
+            targetAudience: 'Professional',
+            language: 'English',
+            toneStyle: 'Professional',
+            formality: 80,
+            creativityLevel: 40,
+            focusKeywords: '',
+            keywordDensity: 1.0,
+        },
+        Newsletter: {
+            wordCount: 50,
+            characterCount: 200,
+            targetAudience: 'Subscribers',
+            language: 'English',
+            toneStyle: 'Friendly',
+            formality: 60,
+            creativityLevel: 70,
+            focusKeywords: '',
+            keywordDensity: 1.2,
+        },
+        Twitter: {
+            wordCount: 30,
+            characterCount: 100,
+            targetAudience: 'General',
+            language: 'English',
+            toneStyle: 'Concise',
+            formality: 40,
+            creativityLevel: 80,
+            focusKeywords: '',
+            keywordDensity: 0.5,
+        },
+    });
 
 
     // Editing State
@@ -256,10 +257,10 @@ const PostPage = ({ transcriptHistory }) => {
         if (location.state) {
             if (location.state.prompt) {
                 const transcriptContent = location.state.prompt;
-                const mockTranscript = [{ 
-                    id: 'seo-dashboard-transcript', 
-                    name: 'Content from SEO Dashboard', 
-                    content: transcriptContent 
+                const mockTranscript = [{
+                    id: 'seo-dashboard-transcript',
+                    name: 'Content from SEO Dashboard',
+                    content: transcriptContent
                 }];
                 setSelectedTranscripts(mockTranscript);
                 setChatInput('');
@@ -277,9 +278,9 @@ const PostPage = ({ transcriptHistory }) => {
     }, [location.state, location.pathname, navigate]);
 
     useEffect(() => {
-        const hasContent = generatedContent.blog || generatedContent.linkedin || 
-                        generatedContent.newsletter || generatedContent.twitter;
-        
+        const hasContent = generatedContent.blog || generatedContent.linkedin ||
+            generatedContent.newsletter || generatedContent.twitter;
+
         if (hasContent) {
             if (generatedContent.blog) setActiveTab('blog');
             else if (generatedContent.linkedin) setActiveTab('linkedin');
@@ -289,7 +290,7 @@ const PostPage = ({ transcriptHistory }) => {
     }, [generatedContent]);
 
     useEffect(() => {
-        if (!isEditing && generatedContent[activeTab] && 
+        if (!isEditing && generatedContent[activeTab] &&
             editedContent !== generatedContent[activeTab]) {
             setEditedContent(generatedContent[activeTab]);
         }
@@ -310,7 +311,7 @@ const PostPage = ({ transcriptHistory }) => {
                 setIsYoutubePreviewMode(false);
             }
         }, 300); // 300ms debounce
-    
+
         return () => clearTimeout(timeoutId);
     }, [youtubeUrlInput, displayedYoutubeVideoId]);
 
@@ -362,38 +363,38 @@ const PostPage = ({ transcriptHistory }) => {
             clearTimeout(timeoutId);
         };
     }, [isLoading]);
-    
+
     // Popup message effect
     useEffect(() => {
-    let timer;
-    let showDelay;
+        let timer;
+        let showDelay;
 
-    if (showPopup) {
-        // Delay showing the popup by 0.5s
-        showDelay = setTimeout(() => {
-            timer = setTimeout(() => {
-                setShowPopup(false);
-                setPopupMessage('');
-            }, 3000); // Hide after 3 seconds
-        }, 500); // Delay before showing
-    }
+        if (showPopup) {
+            // Delay showing the popup by 0.5s
+            showDelay = setTimeout(() => {
+                timer = setTimeout(() => {
+                    setShowPopup(false);
+                    setPopupMessage('');
+                }, 3000); // Hide after 3 seconds
+            }, 500); // Delay before showing
+        }
 
-    return () => {
-        clearTimeout(showDelay);
-        clearTimeout(timer);
-    };
-}, [showPopup]);
+        return () => {
+            clearTimeout(showDelay);
+            clearTimeout(timer);
+        };
+    }, [showPopup]);
 
 
     // Action Handlers
     // FIX: Removed useCallback to avoid stale state issues.
-  const handleGenerationOptionsChange = (newOptions) => {
-    console.log('Updating generation options:', newOptions); // Debug log
-    setGenerationOptions(prevOptions => ({
-        ...prevOptions,
-        ...newOptions
-    }));
-};
+    const handleGenerationOptionsChange = (newOptions) => {
+        console.log('Updating generation options:', newOptions); // Debug log
+        setGenerationOptions(prevOptions => ({
+            ...prevOptions,
+            ...newOptions
+        }));
+    };
 
     const handleSelectTranscripts = (selectedItems) => {
         const formattedTranscripts = selectedItems.map(item => ({
@@ -407,12 +408,12 @@ const PostPage = ({ transcriptHistory }) => {
             navigate('/generate-post/generate', { replace: true });
         }
     };
-    
+
     const handleFileUpload = useCallback((event) => {
         const files = Array.from(event.target.files);
         if (files.length > 0) {
             setPendingFileReads(files.length);
-            
+
             const filePromises = files.map(file => {
                 return new Promise((resolve) => {
                     const fileReader = new FileReader();
@@ -430,32 +431,32 @@ const PostPage = ({ transcriptHistory }) => {
             Promise.all(filePromises).then(fileData => {
                 setAttachedFiles(prev => [...prev, ...fileData]);
                 setPendingFileReads(0);
-                
+
                 if (location.pathname !== '/generate-post/generate') {
                     navigate('/generate-post/generate', { replace: true });
                 }
             });
         }
-        
+
         event.target.value = '';
     }, [location.pathname, navigate]);
-    
+
     const handleYoutubeUrlSubmit = useCallback(() => {
         if (youtubeUrlInput.trim()) {
             const videoId = getYoutubeVideoId(youtubeUrlInput);
             if (videoId) {
-                const simulatedTitle = youtubeVideoTitle || 
+                const simulatedTitle = youtubeVideoTitle ||
                     `YouTube Video (${videoId.substring(0, 5)}...)`;
-                
-                setYoutubeFile({ 
-                    id: String(videoId), 
-                    name: simulatedTitle, 
-                    url: youtubeUrlInput 
+
+                setYoutubeFile({
+                    id: String(videoId),
+                    name: simulatedTitle,
+                    url: youtubeUrlInput
                 });
-                
+
                 setIsYoutubePreviewMode(false);
                 setShowYoutubeInput(false);
-                
+
                 if (location.pathname !== '/generate-post/generate') {
                     navigate('/generate-post/generate', { replace: true });
                 }
@@ -481,80 +482,80 @@ const PostPage = ({ transcriptHistory }) => {
         }
     }, []);
 
-   const handleSendChatMessage = async () => {
-    const effectivePrompt = chatInput.trim();
-    const hasSourceContent = selectedTranscripts.length > 0 || attachedFiles.length > 0 || youtubeFile;
+    const handleSendChatMessage = async () => {
+        const effectivePrompt = chatInput.trim();
+        const hasSourceContent = selectedTranscripts.length > 0 || attachedFiles.length > 0 || youtubeFile;
 
-    if (!effectivePrompt && !hasSourceContent) {
-        setPopupMessage('Please provide a prompt or attach content.');
-        setShowPopup(true);
-        return;
-    }
-    
-    const attachmentsToSend = {
-        selectedTranscripts: selectedTranscripts,
-        attachedFiles: attachedFiles,
-        youtubeFile: youtubeFile,
-    };
-
-    setIsLoading(true);
-    setGeneratedContent({ blog: null, linkedin: null, newsletter: null, twitter: null });
-    setChatHistory(prev => [...prev, { id: Date.now(), text: effectivePrompt, sender: 'user' }]);
-    setChatInput('');
-    setSelectedTranscripts([]);
-    setAttachedFiles([]);
-    setYoutubeFile(null);
-    setYoutubeUrlInput('');
-    setShowYoutubeInput(false);
-
-    try {
-        const payload = {
-            prompt: effectivePrompt,
-            generation_options: generationOptions, // This now includes the full structure
-            selected_transcripts: attachmentsToSend.selectedTranscripts,
-            attached_files: attachmentsToSend.attachedFiles,
-            youtube_file: attachmentsToSend.youtubeFile,
-        };
-
-        console.log('Sending payload to backend:', payload); // Debug log
-
-        const response = await fetch('http://localhost:5050/generate-posts', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            const errorMessage = errorData.message || `Failed to generate posts: ${response.status}`;
-            throw new Error(errorMessage);
+        if (!effectivePrompt && !hasSourceContent) {
+            setPopupMessage('Please provide a prompt or attach content.');
+            setShowPopup(true);
+            return;
         }
 
-        const generatedData = await response.json();
+        const attachmentsToSend = {
+            selectedTranscripts: selectedTranscripts,
+            attachedFiles: attachedFiles,
+            youtubeFile: youtubeFile,
+        };
 
-        setGeneratedContent({
-            blog: generatedData.blog,
-            linkedin: generatedData.linkedin,
-            newsletter: generatedData.newsletter,
-            twitter: generatedData.twitter,
-        });
-        
-        setIsLoading(false);
-        setPopupMessage('All posts generated successfully!');
-        setShowPopup(true);
-        const aiResponseText = "I've generated multi-platform content based on your request. Check the right panel!";
-        setChatHistory(prev => [...prev, { id: Date.now() + 1, text: aiResponseText, sender: 'ai' }]);
-        
-    } catch (error) {
-        console.error('Failed to generate posts:', error);
-        setIsLoading(false);
-        setPopupMessage(`Error: ${error.message}`);
-        setShowPopup(true);
-        setChatHistory(prev => [...prev, { id: Date.now() + 1, text: `Error: ${error.message}. Please check the backend.`, sender: 'ai' }]);
-    }
-};
+        setIsLoading(true);
+        setGeneratedContent({ blog: null, linkedin: null, newsletter: null, twitter: null });
+        setChatHistory(prev => [...prev, { id: Date.now(), text: effectivePrompt, sender: 'user' }]);
+        setChatInput('');
+        setSelectedTranscripts([]);
+        setAttachedFiles([]);
+        setYoutubeFile(null);
+        setYoutubeUrlInput('');
+        setShowYoutubeInput(false);
+
+        try {
+            const payload = {
+                prompt: effectivePrompt,
+                generation_options: generationOptions, // This now includes the full structure
+                selected_transcripts: attachmentsToSend.selectedTranscripts,
+                attached_files: attachmentsToSend.attachedFiles,
+                youtube_file: attachmentsToSend.youtubeFile,
+            };
+
+            console.log('Sending payload to backend:', payload); // Debug log
+
+            const response = await fetch(`${POST_URL}/generate-posts`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                const errorMessage = errorData.message || `Failed to generate posts: ${response.status}`;
+                throw new Error(errorMessage);
+            }
+
+            const generatedData = await response.json();
+
+            setGeneratedContent({
+                blog: generatedData.blog,
+                linkedin: generatedData.linkedin,
+                newsletter: generatedData.newsletter,
+                twitter: generatedData.twitter,
+            });
+
+            setIsLoading(false);
+            setPopupMessage('All posts generated successfully!');
+            setShowPopup(true);
+            const aiResponseText = "I've generated multi-platform content based on your request. Check the right panel!";
+            setChatHistory(prev => [...prev, { id: Date.now() + 1, text: aiResponseText, sender: 'ai' }]);
+
+        } catch (error) {
+            console.error('Failed to generate posts:', error);
+            setIsLoading(false);
+            setPopupMessage(`Error: ${error.message}`);
+            setShowPopup(true);
+            setChatHistory(prev => [...prev, { id: Date.now() + 1, text: `Error: ${error.message}. Please check the backend.`, sender: 'ai' }]);
+        }
+    };
 
     const handlePromptKeyDown = (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
@@ -562,7 +563,7 @@ const PostPage = ({ transcriptHistory }) => {
             handleSendChatMessage();
         }
     };
-    
+
     const handleEditContent = useCallback((type) => {
         setIsEditing(true);
         setActiveEditedContentType(type);
@@ -606,7 +607,7 @@ const PostPage = ({ transcriptHistory }) => {
                         }
                     }
                 `;
-                const response = await fetch('http://localhost:5050/graphql', {
+                const response = await fetch(`${POST_URL}/graphql`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ query: mutation, variables: { title: blogTitle, content: content, tags: tags, published: true } }),
@@ -687,7 +688,7 @@ const PostPage = ({ transcriptHistory }) => {
             default: return <p className={`text-center ${colors.textSecondary}`}>Select a content type.</p>;
         }
     };
-    
+
     const handleInitialCardClick = (type) => {
         if (type === "transcript") {
             setIsOptionsModalOpen(true);
@@ -716,133 +717,133 @@ const PostPage = ({ transcriptHistory }) => {
         { name: "Generate Insights", icon: MessageSquareText, description: "Engage in natural language processing chat for instant insights.", type: "nlp_chat" },
         { name: "Upload YouTube URL", icon: Youtube, description: "Gain SEO insights directly from YouTube video URLs.", type: "youtube_analyze" },
     ];
-    
+
     const themeColors = {
         light: {
-    page: {
-        bgBody: 'bg-[#fefefe]',
-        bg: 'bg-gray-50', // Main page background - pure white
-        bgSecondary: 'bg-gray-100', // Left panel background
-        bgSecondary2: 'bg-[#f0f0f0]',
-        bgHead:'bg-[#fefefe]', // Input and attachment containers
-        bgPrimary: 'bg-gray-100', // Main page background - pure white
-        text: 'text-gray-900',
-        textSecondary: 'text-gray-500',
-        border: 'border-gray-300',
-        cardBg: 'bg-[#fefefe]', // Card backgrounds in welcome view
-        chatBg: 'bg-gray-50',
-        chatUserBg: 'bg-purple-500',
-        chatUserText: 'text-white',
-        chatAIBg: 'bg-gray-200',
-        chatAIText: 'text-gray-800',
-        brandPrimary: 'text-violet-600',
-        brandPrimaryLoader: 'text-[#00c6ff]',
-        brandGradient: 'bg-gradient-to-r from-cyan-500 to-purple-600',
-        inputBg: 'bg-[#fefefe]',
-        inputBorder: 'border-gray-300',
-        LoaderText: 'text-white'
-    },
-    browserFrame: {
-        bgPrimary: 'bg-[#f0f0f0]', // Browser frame header
-        bgSecondary: 'bg-[#fefefe]', // Browser frame content area
-        border: 'border-gray-300',
-        textPrimary: 'text-gray-900',
-        textSecondary: 'text-gray-500',
-    },
-    contentActions: {
-        bg: 'bg-[#fefefe]',
-        bgButton: 'bg-gray-100',
-        bgButtonHover: 'bg-gray-200',
-        textButton: 'text-gray-700',
-        border: 'border-gray-300',
-        textPrimary: 'text-gray-900',
-        textSecondary: 'text-gray-500',
-        activeBg: 'bg-blue-500',
-        activeText: 'text-white',
-        copySuccessBg: 'bg-green-500',
-        copySuccessText: 'text-white',
-        voiceListBg: 'bg-[#fefefe]',
-        voiceListHover: 'bg-gray-100',
-        voiceListActive: 'bg-gray-100',
-        messageBg: 'bg-green-100',
-        messageText: 'text-green-800',
-    },
-    blogPost: {
-        bgCard: 'bg-[#fefefe]',
-        border: 'border-gray-300',
-        textPrimary: 'text-gray-900',
-        textSecondary: 'text-gray-600',
-        inputBg: 'bg-[#fefefe]',
-        inputBorder: 'border-gray-300',
-        inputFocusRing: 'ring-blue-500',
-        buttonPrimaryBg: 'bg-blue-600',
-        buttonPrimaryText: 'text-white',
-        buttonSecondaryHoverBg: 'bg-gray-200',
-        buttonSecondaryText: 'text-gray-700',
-        icon: 'text-gray-500',
-    },
-    linkedinPost: {
-        bgCard: 'bg-[#fefefe]',
-        bgCardBorder: 'border-gray-300',
-        textPrimary: 'text-gray-900',
-        textSecondary: 'text-gray-500',
-        border: 'border-gray-300',
-        inputBg: 'bg-[#fefefe]',
-        inputBorder: 'border-gray-300',
-        inputFocusRing: 'ring-blue-500',
-        buttonHoverBg: 'bg-gray-100',
-        iconPrimary: 'text-blue-700',
-    },
-    newsletterPost: {
-        bgCard: 'bg-[#fefefe]',
-        bgCardBorder: 'border-gray-300',
-        textPrimary: 'text-gray-900',
-        textSecondary: 'text-gray-600',
-        border: 'border-gray-300',
-        inputBg: 'bg-[#fefefe]',
-        inputBorder: 'border-gray-300',
-        inputFocusRing: 'ring-blue-500',
-        link: 'text-blue-600',
-        codeBg: '#f4f4f5',
-    },
-    twitterPost: {
-        bgCard: 'bg-[#fefefe]',
-        bgCardBorder: 'border-gray-300',
-        textPrimary: 'text-gray-900',
-        textSecondary: 'text-gray-500',
-        border: 'border-gray-300',
-        inputBg: 'bg-[#fefefe]',
-        inputBorder: 'border-gray-300',
-        inputFocusRing: 'ring-blue-500',
-        buttonHoverBg: 'bg-gray-100',
-        iconPrimary: 'text-blue-500',
-        iconSecondary: 'text-gray-500',
-        iconGreen: 'text-green-500',
-        iconRed: 'text-red-500',
-    },
-    generationOptions: {
-        bg: 'bg-[#fefefe]',
-        bgCard: 'bg-gray-100',
-        border: 'border-gray-300',
-        textPrimary: 'text-gray-900',
-        textSecondary: 'text-gray-600',
-        buttonDefaultBg: 'bg-[#fefefe]',
-        buttonDefaultText: 'text-gray-700',
-        buttonDefaultHover: 'bg-gray-200',
-        buttonActiveBg: 'bg-blue-600',
-        buttonActiveText: 'text-white',
-        inputBg: 'bg-[#fefefe]',
-        inputBorder: 'border-gray-300',
-        inputFocusRing: 'ring-blue-500',
-        rangeBg: 'bg-gray-200',
-        rangeThumb: 'bg-blue-600',
-        brandPrimary: 'text-blue-600',
-        brandGradient: 'bg-gradient-to-br from-purple-600 to-purple-800',
-    },
-},
+            page: {
+                bgBody: 'bg-[#fefefe]',
+                bg: 'bg-gray-50', // Main page background - pure white
+                bgSecondary: 'bg-gray-100', // Left panel background
+                bgSecondary2: 'bg-[#f0f0f0]',
+                bgHead: 'bg-[#fefefe]', // Input and attachment containers
+                bgPrimary: 'bg-gray-100', // Main page background - pure white
+                text: 'text-gray-900',
+                textSecondary: 'text-gray-500',
+                border: 'border-gray-300',
+                cardBg: 'bg-[#fefefe]', // Card backgrounds in welcome view
+                chatBg: 'bg-gray-50',
+                chatUserBg: 'bg-purple-500',
+                chatUserText: 'text-white',
+                chatAIBg: 'bg-gray-200',
+                chatAIText: 'text-gray-800',
+                brandPrimary: 'text-violet-600',
+                brandPrimaryLoader: 'text-[#00c6ff]',
+                brandGradient: 'bg-gradient-to-r from-cyan-500 to-purple-600',
+                inputBg: 'bg-[#fefefe]',
+                inputBorder: 'border-gray-300',
+                LoaderText: 'text-white'
+            },
+            browserFrame: {
+                bgPrimary: 'bg-[#f0f0f0]', // Browser frame header
+                bgSecondary: 'bg-[#fefefe]', // Browser frame content area
+                border: 'border-gray-300',
+                textPrimary: 'text-gray-900',
+                textSecondary: 'text-gray-500',
+            },
+            contentActions: {
+                bg: 'bg-[#fefefe]',
+                bgButton: 'bg-gray-100',
+                bgButtonHover: 'bg-gray-200',
+                textButton: 'text-gray-700',
+                border: 'border-gray-300',
+                textPrimary: 'text-gray-900',
+                textSecondary: 'text-gray-500',
+                activeBg: 'bg-blue-500',
+                activeText: 'text-white',
+                copySuccessBg: 'bg-green-500',
+                copySuccessText: 'text-white',
+                voiceListBg: 'bg-[#fefefe]',
+                voiceListHover: 'bg-gray-100',
+                voiceListActive: 'bg-gray-100',
+                messageBg: 'bg-green-100',
+                messageText: 'text-green-800',
+            },
+            blogPost: {
+                bgCard: 'bg-[#fefefe]',
+                border: 'border-gray-300',
+                textPrimary: 'text-gray-900',
+                textSecondary: 'text-gray-600',
+                inputBg: 'bg-[#fefefe]',
+                inputBorder: 'border-gray-300',
+                inputFocusRing: 'ring-blue-500',
+                buttonPrimaryBg: 'bg-blue-600',
+                buttonPrimaryText: 'text-white',
+                buttonSecondaryHoverBg: 'bg-gray-200',
+                buttonSecondaryText: 'text-gray-700',
+                icon: 'text-gray-500',
+            },
+            linkedinPost: {
+                bgCard: 'bg-[#fefefe]',
+                bgCardBorder: 'border-gray-300',
+                textPrimary: 'text-gray-900',
+                textSecondary: 'text-gray-500',
+                border: 'border-gray-300',
+                inputBg: 'bg-[#fefefe]',
+                inputBorder: 'border-gray-300',
+                inputFocusRing: 'ring-blue-500',
+                buttonHoverBg: 'bg-gray-100',
+                iconPrimary: 'text-blue-700',
+            },
+            newsletterPost: {
+                bgCard: 'bg-[#fefefe]',
+                bgCardBorder: 'border-gray-300',
+                textPrimary: 'text-gray-900',
+                textSecondary: 'text-gray-600',
+                border: 'border-gray-300',
+                inputBg: 'bg-[#fefefe]',
+                inputBorder: 'border-gray-300',
+                inputFocusRing: 'ring-blue-500',
+                link: 'text-blue-600',
+                codeBg: '#f4f4f5',
+            },
+            twitterPost: {
+                bgCard: 'bg-[#fefefe]',
+                bgCardBorder: 'border-gray-300',
+                textPrimary: 'text-gray-900',
+                textSecondary: 'text-gray-500',
+                border: 'border-gray-300',
+                inputBg: 'bg-[#fefefe]',
+                inputBorder: 'border-gray-300',
+                inputFocusRing: 'ring-blue-500',
+                buttonHoverBg: 'bg-gray-100',
+                iconPrimary: 'text-blue-500',
+                iconSecondary: 'text-gray-500',
+                iconGreen: 'text-green-500',
+                iconRed: 'text-red-500',
+            },
+            generationOptions: {
+                bg: 'bg-[#fefefe]',
+                bgCard: 'bg-gray-100',
+                border: 'border-gray-300',
+                textPrimary: 'text-gray-900',
+                textSecondary: 'text-gray-600',
+                buttonDefaultBg: 'bg-[#fefefe]',
+                buttonDefaultText: 'text-gray-700',
+                buttonDefaultHover: 'bg-gray-200',
+                buttonActiveBg: 'bg-blue-600',
+                buttonActiveText: 'text-white',
+                inputBg: 'bg-[#fefefe]',
+                inputBorder: 'border-gray-300',
+                inputFocusRing: 'ring-blue-500',
+                rangeBg: 'bg-gray-200',
+                rangeThumb: 'bg-blue-600',
+                brandPrimary: 'text-blue-600',
+                brandGradient: 'bg-gradient-to-br from-purple-600 to-purple-800',
+            },
+        },
         dark: {
             page: {
-                 // Dark header background
+                // Dark header background
                 bgBody: 'bg-[#0f172a]',
                 bg: 'bg-[#0f172a]',
                 bgSecondary: 'bg-[#1E293B]',
@@ -863,7 +864,7 @@ const PostPage = ({ transcriptHistory }) => {
                 brandGradient: 'bg-gradient-to-br from-[#00c6ff] to-[#0072ff]',
                 inputBg: 'bg-[#1E293B]',
                 inputBorder: 'border-[#334155]',
-                LoaderText:'text-white'
+                LoaderText: 'text-white'
             },
             browserFrame: {
                 bgPrimary: 'bg-[#1E293B]',
@@ -966,7 +967,7 @@ const PostPage = ({ transcriptHistory }) => {
     };
     const colors = themeColors[theme].page;
     const Card = ({ className, ...props }) => {
-        const cardHoverBg = theme === 'dark' ? '': 'bg-gray-50';
+        const cardHoverBg = theme === 'dark' ? '' : 'bg-gray-50';
         return (
             <div
                 className={`${colors.cardBg} ${colors.border} flex flex-col rounded-lg ${className} ${cardHoverBg} transition-colors cursor-pointer hover:transform hover:-translate-y-2 transition-transform duration-300`}
@@ -1044,34 +1045,34 @@ const PostPage = ({ transcriptHistory }) => {
         );
     };
 
-   const PopupMessage = () => {
-    const bgColor = 'bg-green-500/85 dark:bg-green-500/85 backdrop-blur-';
-    const textColor = 'text-white';
-    const transitionClass = showPopup
-        ? 'translate-y-0 opacity-100'
-        : '-translate-y-8 opacity-0';
+    const PopupMessage = () => {
+        const bgColor = 'bg-green-500/85 dark:bg-green-500/85 backdrop-blur-';
+        const textColor = 'text-white';
+        const transitionClass = showPopup
+            ? 'translate-y-0 opacity-100'
+            : '-translate-y-8 opacity-0';
 
-    return (
-        <div
-            className={`fixed top-10 left-1/2 -translate-x-1/2 z-50 transform transition-all duration-500 ease-out ${transitionClass}`}
-        >
+        return (
             <div
-                className={`
+                className={`fixed top-10 left-1/2 -translate-x-1/2 z-50 transform transition-all duration-500 ease-out ${transitionClass}`}
+            >
+                <div
+                    className={`
                     px-8 py-3
                     min-w-[300px] max-w-[90vw]
                     rounded-lg shadow-lg
                     text-lg font-medium text-center
                     ${bgColor} ${textColor}
                 `}
-            >
-                {popupMessage}
+                >
+                    {popupMessage}
+                </div>
             </div>
-        </div>
-    );
-};
+        );
+    };
 
     return (
-        
+
         <div className={`flex flex-col h-screen overflow-y-auto font-sans ${colors.bg} ${colors.text}`}>
             {isWelcomeView && (
                 <main className={`flex-1 flex flex-col items-center ${colors.bg} ${colors.text} relative min-h-screen overflow-y-auto`}>
@@ -1169,7 +1170,7 @@ const PostPage = ({ transcriptHistory }) => {
                 </main>
             )}
             {isGenerateView && (
-                
+
                 <div className="flex h-full w-full pl-3 pt-6 pr-3 pb-3 ">
                     <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap');
@@ -1326,7 +1327,7 @@ const PostPage = ({ transcriptHistory }) => {
                                     <Youtube size={20} className="mr-2" /> YouTube
                                 </button>
                             </div>
-                            
+
                             {showYoutubeInput && (
                                 <div id="youtube-url-section" className={`mt-4 p-4 rounded-lg border ${colors.border} ${colors.bgSecondary}`}>
                                     <label htmlFor="youtube-url-input" className={`block font-semibold ${colors.text} mb-2`}>
@@ -1372,10 +1373,10 @@ const PostPage = ({ transcriptHistory }) => {
                             </button>
                         </div>
                     </div>
-                    
+
                     <div className={`h-full flex flex-col border-1 ${colors.border} rounded-2xl shadow-xl w-full lg:w-5/7 ml-4`}>
                         <BrowserFrame colors={themeColors[theme].browserFrame} theme={theme} activeTabTitle={activeTab === 'blog' ? 'Blog Post' : activeTab === 'linkedin' ? 'LinkedIn' : activeTab === 'newsletter' ? 'Newsletter' : 'Twitter/X'}>
-                             {/* Right panel loader and progress text */}
+                            {/* Right panel loader and progress text */}
                             {isLoading && (
                                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-violet-700/10 dark:bg-slate-900/70 z-10 backdrop-blur-sm transition-opacity duration-300">
                                     <Loader2 size={48} className={`animate-spin ${colors.brandPrimaryLoader}`} />
@@ -1402,19 +1403,19 @@ const PostPage = ({ transcriptHistory }) => {
                                 ) : (
                                     <>
                                         {(!generatedContent.blog && !generatedContent.linkedin && !generatedContent.newsletter && !generatedContent.twitter) ? (
-                                           <section
-  id="how-it-works"
-  className={`flex items-center justify-center h-full px-6 py-12 ${themeColors[theme].browserFrame.bgSecondary}`}
-  style={{
-    overflow: 'hidden' // prevent scroll
-  }}
->
-  <TypewriterText
-    theme={theme}
-    themeColors={themeColors}
-    colors={colors}
-  />
-</section>
+                                            <section
+                                                id="how-it-works"
+                                                className={`flex items-center justify-center h-full px-6 py-12 ${themeColors[theme].browserFrame.bgSecondary}`}
+                                                style={{
+                                                    overflow: 'hidden' // prevent scroll
+                                                }}
+                                            >
+                                                <TypewriterText
+                                                    theme={theme}
+                                                    themeColors={themeColors}
+                                                    colors={colors}
+                                                />
+                                            </section>
 
                                         ) : (
                                             <>

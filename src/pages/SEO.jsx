@@ -10,6 +10,7 @@ import DashboardPage from '../components/seo/DashboardPage.jsx';
 import IntroPage from '../components/seo/IntroPage.jsx';
 import ChatPage from '../components/seo/ChatPage.jsx';
 import { setGlobalTheme, getGlobalTheme, subscribeToThemeChange } from '../utils/globalTheme';
+import { SEO_URL } from '../config';
 
 // --- THEME & COLOR MANAGEMENT ---
 const themes = {
@@ -17,7 +18,7 @@ const themes = {
         bgDefault: '#0f172a',
         bgSubtle: '#1e293b',
         bgCard: '#1e293b',
-        border:'border-gray-800',
+        border: 'border-gray-800',
         bgCardHover: '#334155',
         textPrimary: '#f1f5f9',
         textSecondary: '#94a3b8',
@@ -62,7 +63,7 @@ const themes = {
         bgDefault: '#fcfcfc',
         bgSubtle: '#f9fafb',
         bgCard: '#ffffff',
-        border:'border-gray-100',
+        border: 'border-gray-100',
         bgCardHover: '#f5f5f6',
         textPrimary: '#161618',
         textSecondary: '#6b7280',
@@ -126,16 +127,16 @@ export const DashboardProvider = ({ children }) => {
 
     const [isLoadingInitialData, setIsLoadingInitialData] = useState(true);
     const [isLoadingDetailedData, setIsLoadingDetailedData] = useState(false);
-    
+
     const [allDashboardSessions, setAllDashboardSessions] = useState(() => getInitialStateFromLocalStorage('allDashboardSessions', []));
-    
+
     const [currentSessionId, setCurrentSessionId] = useState(() => {
         const sessions = getInitialStateFromLocalStorage('allDashboardSessions', []);
         return sessions.length > 0 ? sessions[sessions.length - 1].id : null;
     });
 
     const currentSession = currentSessionId ? allDashboardSessions.find(s => s.id === currentSessionId) : null;
-    
+
     const [keywords, setKeywords] = useState(currentSession?.allData?.keywords || []);
     const [selectedKeyword, setSelectedKeyword] = useState(currentSession?.selectedKeyword || null);
     const [lastUserMessage, setLastUserMessage] = useState(currentSession?.lastUserMessage || '');
@@ -152,7 +153,7 @@ export const DashboardProvider = ({ children }) => {
     const [uploadedTranscripts, setUploadedTranscripts] = useState([]);
     const [uploadedFiles, setUploadedFiles] = useState([]);
     const [uploadedYoutubeUrl, setUploadedYoutubeUrl] = useState(null);
-    
+
     const currentDetailedJobIdRef = useRef(null);
 
     useEffect(() => {
@@ -204,7 +205,7 @@ export const DashboardProvider = ({ children }) => {
     const deleteDashboardSession = useCallback((id) => {
         setAllDashboardSessions(prevSessions => {
             const updatedSessions = prevSessions.filter(s => s.id !== id);
-            
+
             // If the current active session is the one being deleted, switch to the last session in the array
             if (currentSessionId === id && updatedSessions.length > 0) {
                 setCurrentSessionId(updatedSessions[updatedSessions.length - 1].id);
@@ -221,12 +222,12 @@ export const DashboardProvider = ({ children }) => {
             prevSessions.map(session =>
                 session.id === sessionId
                     ? {
-                          ...session,
-                          allData: {
-                              ...session.allData,
-                              relatedPosts: newRelatedPosts
-                          }
-                      }
+                        ...session,
+                        allData: {
+                            ...session.allData,
+                            relatedPosts: newRelatedPosts
+                        }
+                    }
                     : session
             )
         );
@@ -287,7 +288,7 @@ export const DashboardProvider = ({ children }) => {
                     }
                 `;
 
-                const response = await fetch('http://localhost:8000/graphql', {
+                const response = await fetch(`${SEO_URL}/graphql`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ query }),
@@ -301,7 +302,7 @@ export const DashboardProvider = ({ children }) => {
 
                 const data = result.data;
                 const dashboardData = data.getAllDashboardData || {};
-                
+
                 const transformedSuggested = (dashboardData.suggested || []).reduce((acc, item) => {
                     acc[item.keyword] = item.suggestions;
                     return acc;
@@ -326,7 +327,7 @@ export const DashboardProvider = ({ children }) => {
                     platformTrends: transformedPlatformTrends,
                     relatedPosts: transformedRelatedPosts,
                 };
-                
+
                 const newSession = {
                     id: `session-${Date.now()}`,
                     name: 'Initial Dashboard Data',
@@ -337,10 +338,10 @@ export const DashboardProvider = ({ children }) => {
                     generationTypeBreakdownData: data.getGenerationTypeBreakdown || [],
                     recentGenerations: [{ id: Date.now(), name: 'Initial Data', type: 'initial', timestamp: Date.now() }],
                 };
-                
+
                 setAllDashboardSessions([newSession]);
                 setCurrentSessionId(newSession.id);
-                
+
             } catch (error) {
                 console.error("Error fetching ALL initial dashboard data:", error);
             } finally {
@@ -480,7 +481,7 @@ function SEO() {
     const toggleTheme = useCallback(() => {
         setGlobalTheme(theme === 'dark' ? 'light' : 'dark');
     }, [theme]);
-    
+
     const themeColors = themes[theme];
 
     const location = useLocation();

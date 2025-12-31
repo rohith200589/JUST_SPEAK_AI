@@ -8,6 +8,8 @@ import SEO, { DashboardProvider } from './pages/SEO';
 import TranscriptPage from './pages/Transcript';
 import PostPage from './pages/Post';
 import MainLayout from './components/MainLayout';
+import ToasterProvider from './components/Toaster';
+import ServerStatusChecker from './components/ServerStatusChecker';
 import Mindmap from './pages/mindmap';
 import AnalyticsPage from './pages/SupportPages/AnalyticsPage';
 import SettingsPage from './pages/SupportPages/SettingsPage';
@@ -120,7 +122,10 @@ function App() {
 export default function AppWrapper() {
   return (
     <Router>
-      <App />
+      <ToasterProvider>
+        <ServerStatusChecker />
+        <App />
+      </ToasterProvider>
     </Router>
   );
 }

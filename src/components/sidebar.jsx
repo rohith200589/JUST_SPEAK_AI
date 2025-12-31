@@ -53,11 +53,11 @@ const Sidebar = () => {
       document.head.removeChild(fontLink);
     };
   }, []);
-  
+
   // New useEffect to manage sub-navigation state based on current URL
   useEffect(() => {
     const currentPath = location.pathname;
-    const activeParent = mainNavItems.find(item => 
+    const activeParent = mainNavItems.find(item =>
       (item.to === currentPath || (item.subNav && item.subNav.some(subItem => subItem.to === currentPath)))
     );
     if (activeParent && activeParent.subNav) {
@@ -93,9 +93,9 @@ const Sidebar = () => {
   ];
 
   const bottomNavItems = [
-    { to: "/profile", icon: <CircleUser size={iconBaseSize} />, text: "Profile" },
-    { to: "/settings", icon: <Settings size={iconBaseSize} />, text: "Settings" },
-    { to: "/help-support", icon: <BadgeAlert size={iconBaseSize} />, text: "Help & Support" },
+    // { to: "/profile", icon: <CircleUser size={iconBaseSize} />, text: "Profile" },
+    // { to: "/settings", icon: <Settings size={iconBaseSize} />, text: "Settings" },
+    // { to: "/help-support", icon: <BadgeAlert size={iconBaseSize} />, text: "Help & Support" },
   ];
 
   const sections = [...new Set(mainNavItems.map(item => item.section))];
