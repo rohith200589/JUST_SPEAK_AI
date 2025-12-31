@@ -37,7 +37,6 @@ en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_
 env==0.1.0
 environs==14.3.0
 et_xmlfile==2.0.0
-eventlet==0.33.3
 fastapi==0.116.1
 fastapi_cors==0.0.6
 faster-whisper==1.1.1
@@ -69,6 +68,7 @@ graphql-core==2.3.2
 graphql-relay==2.0.1
 graphql-server-core==1.2.0
 greenlet==3.2.3
+gevent-websocket==0.10.1
 groovy==0.1.2
 grpcio==1.73.0
 grpcio-status==1.62.3
