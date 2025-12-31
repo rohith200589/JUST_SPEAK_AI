@@ -21,7 +21,7 @@ from flask_graphql import GraphQLView
 
 # --- Flask app initialization and configuration ---
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=["*", "https://just-speak-nine.vercel.app"])
 
 @app.route('/')
 def index():

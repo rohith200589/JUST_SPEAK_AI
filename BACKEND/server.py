@@ -45,7 +45,7 @@ from docx import Document # pip install python-docx
 app = Flask(__name__)
 CORS(app)
 
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode='gevent')
+socketio = SocketIO(app, cors_allowed_origins=["*","https://just-speak-nine.vercel.app"], async_mode='gevent')
 
 @app.route('/')
 def index():
