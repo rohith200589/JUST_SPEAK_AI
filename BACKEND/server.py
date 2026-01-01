@@ -1,3 +1,6 @@
+from gevent import monkey
+monkey.patch_all()
+
 # Import necessary libraries
 from flask import Flask, jsonify
 from flask_cors import CORS
@@ -233,8 +236,11 @@ def chunk_audio(audio_path: str, chunk_length_seconds: int = 60) -> list:
     """
     try:
         base_dir = os.path.dirname(audio_path)
-        # Use segment pattern to avoid collision
-        output_pattern = os.path.join(base_dir, "chunk_%03d.mp3")
+        # Create a unique chunks subdirectory for this request
+        chunks_dir = os.path.join(base_dir, "chunks")
+        os.makedirs(chunks_dir, exist_ok=True)
+        
+        output_pattern = os.path.join(chunks_dir, "chunk_%03d.mp3")
         
         # ffmpeg command to chunk the file into 60s segments, converting to mp3 at the same time
         cmd = [
@@ -256,8 +262,8 @@ def chunk_audio(audio_path: str, chunk_length_seconds: int = 60) -> list:
 
         # List the created chunks
         chunk_paths = sorted([
-            os.path.join(base_dir, f) 
-            for f in os.listdir(base_dir) 
+            os.path.join(chunks_dir, f) 
+            for f in os.listdir(chunks_dir) 
             if f.startswith("chunk_") and f.endswith(".mp3")
         ])
         
@@ -276,31 +282,27 @@ def chunk_audio(audio_path: str, chunk_length_seconds: int = 60) -> list:
 
 # Determine the device for Faster Whisper
 device = "cuda" if ctranslate2.get_cuda_device_count() > 0 else "cpu"
+_cached_model = None
 
-# Load the Faster Whisper model globally
-model = None
-with app.app_context():
-    try:
-        overall_percent = calculate_overall_progress('start', 0) # Initial 0%
-        emit('progress_update', {'type': 'overall', 'status': 'Loading AI model (Faster Whisper)...', 'percentage': overall_percent}, namespace='/', broadcast=True)
-
-        model = WhisperModel("tiny", device=device, compute_type="int8")
-
-        overall_percent = calculate_overall_progress('start', 100) # Model loaded, but overall process hasn't started yet
-        emit('progress_update', {'type': 'overall', 'status': 'AI model loaded successfully.', 'percentage': overall_percent}, namespace='/', broadcast=True)
-    except Exception as e:
-        print(f"Error loading Faster Whisper model: {e}")
-        with app.app_context():
-            emit('progress_update', {'type': 'overall', 'status': f'Error loading AI model: {e}', 'percentage': 0}, namespace='/', broadcast=True)
-        raise RuntimeError(f"Failed to load Faster Whisper model: {e}")
+def get_whisper_model():
+    """Lazy-loads the Whisper model to save memory during boot."""
+    global _cached_model
+    if _cached_model is None:
+        try:
+            print(f"Loading Faster Whisper model (tiny) on {device}...")
+            _cached_model = WhisperModel("tiny", device=device, compute_type="int8")
+            print("AI Model loaded successfully.")
+        except Exception as e:
+            print(f"Error loading Faster Whisper model: {e}")
+            raise RuntimeError(f"Failed to load Faster Whisper model: {e}")
+    return _cached_model
 
 def transcribe_audio_with_faster_whisper(audio_path: str) -> (str, list):
     """
     Transcribes an audio file using the Faster Whisper model.
     Returns the full transcript and a list of timestamps with text.
     """
-    if model is None:
-        raise RuntimeError("Faster Whisper model not loaded.")
+    model = get_whisper_model()
 
     try:
         segments, info = model.transcribe(audio_path, beam_size=5)
@@ -792,8 +794,6 @@ class TranscribeVideo(graphene.Mutation):
 
 
             if not transcript_found_via_api:
-                if model is None:
-                    raise RuntimeError("Faster Whisper model not loaded. Cannot perform AI transcription.")
 
                 # Fallback: Download audio and transcribe using Whisper
                 print("Proceeding with audio download and Whisper transcription...")

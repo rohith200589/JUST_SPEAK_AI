@@ -1,3 +1,6 @@
+from gevent import monkey
+monkey.patch_all()
+
 # seo.py
 import os
 import graphene
