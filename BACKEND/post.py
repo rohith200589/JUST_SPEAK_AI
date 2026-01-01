@@ -14,6 +14,7 @@ import io
 import requests
 import base64
 import time
+import tempfile
 import sys
 import logging
 import graphene
@@ -308,14 +309,34 @@ def generate_posts_sync():
             return jsonify({"message": f"Failed to parse file '{f.get('name', '')}': {str(e)}"}), 422
 
     if youtube_file:
+        cookie_file_path = None
         try:
+            youtube_cookies = os.environ.get("YOUTUBE_COOKIES")
+            if youtube_cookies:
+                try:
+                    fd, cookie_file_path = tempfile.mkstemp(suffix=".txt")
+                    with os.fdopen(fd, 'w') as f:
+                        f.write(youtube_cookies)
+                    print(f"Created temporary cookie file for post generation: {cookie_file_path}")
+                except Exception as ce:
+                    logging.error(f"Error creating temporary cookie file: {ce}")
+
             video_id = youtube_file.get('url', '').split("v=")[-1]
-            transcript = YouTubeTranscriptApi.get_transcript(video_id)
+            transcript = YouTubeTranscriptApi.get_transcript(
+                video_id, 
+                cookies=cookie_file_path if cookie_file_path else None
+            )
             full_transcript_text = " ".join([t['text'] for t in transcript])
             all_content_sources += f"--- YouTube Video Transcript ---\n{full_transcript_text}\n---\n"
         except Exception as e:
-            logging.error(f"Error fetching YouTube transcript for URL {youtube_file.get('url', '')}: {e}", exc_info=True)
+            logging.error(f"Error fetching YouTube transcript: {e}", exc_info=True)
             return jsonify({"message": "Error fetching YouTube transcript. Please check the URL or try again later."}), 500
+        finally:
+            if cookie_file_path and os.path.exists(cookie_file_path):
+                try:
+                    os.remove(cookie_file_path)
+                except Exception as e:
+                    logging.error(f"Error cleaning up cookie file: {e}")
 
     # Submit synchronous tasks to the thread pool executor
     future_blog = executor.submit(generate_blog_post, prompt, generation_options, all_content_sources)

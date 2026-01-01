@@ -141,7 +141,7 @@ def calculate_overall_progress(current_stage, stage_percentage, total_sub_steps=
     return min(100, max(0, int(overall_percentage))) # Clamp between 0 and 100
 
 # Helper function to download YouTube audio (kept for potential fallback or future direct audio processing)
-def download_youtube_audio(video_id: str) -> str:
+def download_youtube_audio(video_id: str, cookie_file_path: str = None) -> str:
     """
     Downloads the audio from a YouTube video and saves it to a temporary file.
     Returns the path to the downloaded audio file.
@@ -171,18 +171,9 @@ def download_youtube_audio(video_id: str) -> str:
         'force_ipv4': True,
     }
 
-    # Support for cookies via environment variable (Netscape format)
-    cookie_content = os.environ.get("YOUTUBE_COOKIES")
-    cookie_file_path = None
-    if cookie_content:
-        try:
-            fd, cookie_file_path = tempfile.mkstemp(suffix=".txt")
-            with os.fdopen(fd, 'w') as f:
-                f.write(cookie_content)
-            ydl_opts['cookiefile'] = cookie_file_path
-            print("Using YouTube cookies from environment variable.")
-        except Exception as e:
-            print(f"Failed to create temporary cookie file: {e}")
+    if cookie_file_path:
+        ydl_opts['cookiefile'] = cookie_file_path
+        print("Using YouTube cookies in download_youtube_audio.")
 
     try:
         print(f"Attempting to download audio for video ID: {video_id}")
@@ -229,12 +220,6 @@ def download_youtube_audio(video_id: str) -> str:
         if os.path.exists(temp_dir):
             shutil.rmtree(temp_dir)
         raise RuntimeError(f"An unexpected error occurred during audio download: {e}")
-    finally:
-        if cookie_file_path and os.path.exists(cookie_file_path):
-            try:
-                os.remove(cookie_file_path)
-            except Exception as e:
-                print(f"Failed to remove temporary cookie file: {e}")
 
 # Helper function to chunk audio for transcription
 def chunk_audio(audio_path: str, chunk_length_ms: int = 60000) -> list:
@@ -663,8 +648,19 @@ class TranscribeVideo(graphene.Mutation):
         video_id = None
         audio_file_path = None
         temp_dir_to_clean = None
+        cookie_file_path = None
 
         try:
+            # Create a temporary cookie file if YOUTUBE_COOKIES env var is set
+            youtube_cookies = os.environ.get("YOUTUBE_COOKIES")
+            if youtube_cookies:
+                try:
+                    fd, cookie_file_path = tempfile.mkstemp(suffix=".txt")
+                    with os.fdopen(fd, 'w') as f:
+                        f.write(youtube_cookies)
+                    print(f"Created temporary cookie file for the duration of transcription at: {cookie_file_path}")
+                except Exception as ce:
+                    print(f"Error creating temporary cookie file: {ce}")
             parsed_url = urlparse(url)
             query_params = parse_qs(parsed_url.query)
             video_id = query_params.get('v', [None])[0]
@@ -699,9 +695,17 @@ class TranscribeVideo(graphene.Mutation):
                 with app.app_context():
                     emit('progress_update', {'type': 'overall', 'status': 'Attempting to fetch YouTube transcript via API...', 'percentage': overall_percent}, namespace='/', broadcast=True)
 
-                fetched_transcript_list = None
+                proxy_dict = {"https": os.environ.get("HTTPS_PROXY")} if os.environ.get("HTTPS_PROXY") else None
+                
                 try:
-                    fetched_transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=['en'], preserve_formatting=True)
+                    # Pass the cookie file if it was created in the download section
+                    fetched_transcript_list = YouTubeTranscriptApi.get_transcript(
+                        video_id, 
+                        languages=['en'], 
+                        preserve_formatting=True,
+                        cookies=cookie_file_path if cookie_file_path else None,
+                        proxies=proxy_dict
+                    )
                     print("English transcript fetched using youtube_transcript_api.")
                     overall_percent = calculate_overall_progress('youtube_api_fetch', 50)
                     with app.app_context():
@@ -712,7 +716,11 @@ class TranscribeVideo(graphene.Mutation):
                     with app.app_context():
                         emit('progress_update', {'type': 'overall', 'status': 'English transcript not found. Searching for any available language.', 'percentage': overall_percent}, namespace='/', broadcast=True)
 
-                    available_transcripts = YouTubeTranscriptApi.list_transcripts(video_id)
+                    available_transcripts = YouTubeTranscriptApi.list_transcripts(
+                        video_id, 
+                        cookies=cookie_file_path if cookie_file_path else None,
+                        proxies=proxy_dict
+                    )
                     found_any_transcript_obj = False
                     for t_obj in available_transcripts:
                         try:
@@ -772,8 +780,9 @@ class TranscribeVideo(graphene.Mutation):
                 if model is None:
                     raise RuntimeError("Faster Whisper model not loaded. Cannot perform AI transcription.")
 
-                # Download audio progress handled within download_youtube_audio
-                audio_file_path = download_youtube_audio(video_id)
+                # Fallback: Download audio and transcribe using Whisper
+                print("Proceeding with audio download and Whisper transcription...")
+                audio_file_path = download_youtube_audio(video_id, cookie_file_path=cookie_file_path)
                 print(f"DEBUG: Downloaded audio to: {audio_file_path}")
                 temp_dir_to_clean = os.path.dirname(audio_file_path)
 
@@ -855,6 +864,14 @@ class TranscribeVideo(graphene.Mutation):
             if temp_dir_to_clean and os.path.exists(temp_dir_to_clean):
                 print(f"Cleaning up temporary directory: {temp_dir_to_clean}")
                 shutil.rmtree(temp_dir_to_clean)
+            
+            # Clean up the temporary cookie file
+            if cookie_file_path and os.path.exists(cookie_file_path):
+                try:
+                    os.remove(cookie_file_path)
+                    print(f"Cleaned up temporary cookie file: {cookie_file_path}")
+                except Exception as e:
+                    print(f"Error cleaning up temporary cookie file: {e}")
 
 class TranscribeFile(graphene.Mutation):
     class Arguments:
