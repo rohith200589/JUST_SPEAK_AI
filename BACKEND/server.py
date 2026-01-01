@@ -15,6 +15,7 @@ import base64 # For handling base64 encoded file content
 import requests # Re-import requests for Gemini API
 import json # Re-import json for Gemini API payload
 import re
+import subprocess
 # Import Flask-SocketIO
 from flask_socketio import SocketIO, emit # Import SocketIO and emit
 
@@ -224,37 +225,53 @@ def download_youtube_audio(video_id: str, cookie_file_path: str = None) -> str:
         raise RuntimeError(f"An unexpected error occurred during audio download: {e}")
 
 # Helper function to chunk audio for transcription
-def chunk_audio(audio_path: str, chunk_length_ms: int = 60000) -> list:
+def chunk_audio(audio_path: str, chunk_length_seconds: int = 60) -> list:
     """
-    Chunks an audio file into smaller segments.
+    Chunks an audio or video file into smaller MP3 segments using ffmpeg.
     Returns a list of paths to the audio chunks.
+    This version uses subprocess to avoid loading the entire file into memory.
     """
     try:
-        audio = AudioSegment.from_file(audio_path)
-        total_length_ms = len(audio)
-        num_chunks = math.ceil(total_length_ms / chunk_length_ms)
-
-        if num_chunks == 0: # Handle empty audio files gracefully
-            return []
-
-        chunk_paths = []
         base_dir = os.path.dirname(audio_path)
+        # Use segment pattern to avoid collision
+        output_pattern = os.path.join(base_dir, "chunk_%03d.mp3")
+        
+        # ffmpeg command to chunk the file into 60s segments, converting to mp3 at the same time
+        cmd = [
+            'ffmpeg', '-y',
+            '-i', audio_path,
+            '-f', 'segment',
+            '-segment_time', str(chunk_length_seconds),
+            '-c:a', 'libmp3lame',
+            '-b:a', '128k',
+            output_pattern
+        ]
+        
+        print(f"Running ffmpeg to chunk audio: {' '.join(cmd)}")
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        
+        if result.returncode != 0:
+            print(f"ffmpeg error: {result.stderr}")
+            raise RuntimeError(f"ffmpeg failed to chunk audio: {result.stderr}")
 
-        for i in range(num_chunks):
-            start_ms = i * chunk_length_ms
-            end_ms = min((i + 1) * chunk_length_ms, total_length_ms)
-            chunk = audio[start_ms:end_ms]
-            chunk_file_path = os.path.join(base_dir, f"chunk_{i}.mp3")
-            chunk.export(chunk_file_path, format="mp3")
-            chunk_paths.append(chunk_file_path)
-
-            overall_percent = calculate_overall_progress('audio_chunking', ((i+1)/num_chunks)*100)
-            with app.app_context():
-                emit('progress_update', {'type': 'overall', 'status': f'Chunking audio: {i+1}/{num_chunks} chunks processed.', 'percentage': overall_percent}, namespace='/', broadcast=True)
-
+        # List the created chunks
+        chunk_paths = sorted([
+            os.path.join(base_dir, f) 
+            for f in os.listdir(base_dir) 
+            if f.startswith("chunk_") and f.endswith(".mp3")
+        ])
+        
+        print(f"Created {len(chunk_paths)} chunks.")
+        
+        # Emit progress update (simplified for mass chunking)
+        with app.app_context():
+            overall_percent = calculate_overall_progress('audio_chunking', 100)
+            emit('progress_update', {'type': 'overall', 'status': f'Audio chunked into {len(chunk_paths)} segments.', 'percentage': overall_percent}, namespace='/', broadcast=True)
+            
         return chunk_paths
+        
     except Exception as e:
-        print(f"Error chunking audio: {e}")
+        print(f"Error chunking audio with ffmpeg: {e}")
         raise RuntimeError(f"Error chunking audio: {e}")
 
 # Determine the device for Faster Whisper
@@ -267,7 +284,7 @@ with app.app_context():
         overall_percent = calculate_overall_progress('start', 0) # Initial 0%
         emit('progress_update', {'type': 'overall', 'status': 'Loading AI model (Faster Whisper)...', 'percentage': overall_percent}, namespace='/', broadcast=True)
 
-        model = WhisperModel("base", device=device, compute_type="int8")
+        model = WhisperModel("tiny", device=device, compute_type="int8")
 
         overall_percent = calculate_overall_progress('start', 100) # Model loaded, but overall process hasn't started yet
         emit('progress_update', {'type': 'overall', 'status': 'AI model loaded successfully.', 'percentage': overall_percent}, namespace='/', broadcast=True)
