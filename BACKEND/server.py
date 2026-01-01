@@ -162,13 +162,27 @@ def download_youtube_audio(video_id: str) -> str:
         'quiet': True,
         'no_warnings': True,
         'noprogress': True,
-        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'user_agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1',
         'referer': 'https://www.youtube.com/',
-        'extractor_args': {'youtube': {'player_client': ['android', 'ios']}},
+        'extractor_args': {'youtube': {'player_client': ['mweb', 'android', 'ios']}},
         'nocheckcertificate': True,
         'geo_bypass': True,
         'cachedir': False,
+        'force_ipv4': True,
     }
+
+    # Support for cookies via environment variable (Netscape format)
+    cookie_content = os.environ.get("YOUTUBE_COOKIES")
+    cookie_file_path = None
+    if cookie_content:
+        try:
+            fd, cookie_file_path = tempfile.mkstemp(suffix=".txt")
+            with os.fdopen(fd, 'w') as f:
+                f.write(cookie_content)
+            ydl_opts['cookiefile'] = cookie_file_path
+            print("Using YouTube cookies from environment variable.")
+        except Exception as e:
+            print(f"Failed to create temporary cookie file: {e}")
 
     try:
         print(f"Attempting to download audio for video ID: {video_id}")
@@ -198,7 +212,7 @@ def download_youtube_audio(video_id: str) -> str:
             ydl.add_progress_hook(hook)
 
             # Use the standard YouTube URL format for yt-dlp to ensure proper handling
-            standard_youtube_url = f"https://www.youtube.com/watch?v={video_id}"
+            standard_youtube_url = f"https://m.youtube.com/watch?v={video_id}"
             ydl.download([standard_youtube_url])
 
         if not os.path.exists(final_audio_file_path):
@@ -215,6 +229,12 @@ def download_youtube_audio(video_id: str) -> str:
         if os.path.exists(temp_dir):
             shutil.rmtree(temp_dir)
         raise RuntimeError(f"An unexpected error occurred during audio download: {e}")
+    finally:
+        if cookie_file_path and os.path.exists(cookie_file_path):
+            try:
+                os.remove(cookie_file_path)
+            except Exception as e:
+                print(f"Failed to remove temporary cookie file: {e}")
 
 # Helper function to chunk audio for transcription
 def chunk_audio(audio_path: str, chunk_length_ms: int = 60000) -> list:
