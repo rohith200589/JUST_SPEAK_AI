@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 
-// Import your page components
+// Import your page component
 import HomePage from './pages/Homepage';
 import SEO, { DashboardProvider } from './pages/SEO';
 import TranscriptPage from './pages/Transcript';

@@ -15,7 +15,7 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import { toPng } from 'html-to-image';
 
-// Utility function to convert color names to hex for input[type="color"] compatibility
+// Utility function to convrt color names to hex for input[type="color"] compatibility
 const colorNameToHex = (color) => {
   const colors = {
     'black': '#000000', 'white': '#FFFFFF', 'red': '#FF0000', 'green': '#008000',

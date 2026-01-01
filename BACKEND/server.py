@@ -1,7 +1,7 @@
 from gevent import monkey
 monkey.patch_all()
 
-# Import necessary libraries
+# Import necessary librarie
 from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_graphql import GraphQLView

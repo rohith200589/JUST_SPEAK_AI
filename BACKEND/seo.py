@@ -647,7 +647,7 @@ class SendChatMessage(graphene.Mutation):
                 if kw.lower() not in [k.lower() for k in all_unique_keywords_from_ai]:
                     all_unique_keywords_from_ai.append(kw)
             all_unique_keywords_from_ai = all_unique_keywords_from_ai[:10]
-
+# q
             generated_keywords_for_initial_response = []
             generated_platform_trends_for_initial_response = []
 

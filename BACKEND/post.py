@@ -513,7 +513,7 @@ class PostBlogToDevTo(graphene.Mutation):
         except requests.exceptions.ConnectionError as e:
             print(f"DEBUG: requests.exceptions.ConnectionError occurred: {e}")
             print(f"Connection error posting to Dev.to: {e}")
-            # Return an instance of the mutation class itself
+            # Return an instance of the mutation class itsel
             return PostBlogToDevTo(blog_url=f"Connection Error: {str(e)}")
         except Exception as e:
             print(f"DEBUG: An unexpected error occurred in mutate: {e}")
