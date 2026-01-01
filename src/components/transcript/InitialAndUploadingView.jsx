@@ -1,6 +1,6 @@
 // src/components/transcript/InitialAndUploadingView.jsx
 import React, { useEffect, useRef, useState } from 'react';
-import { Upload, FileText, Youtube, Brain, BookText, Share2, Sparkles, Settings, ArrowRight, Loader, BrainCircuit, Sun, Moon, FileClock, History, AlertCircle, Info } from 'lucide-react';
+import { Upload, FileText, Youtube, Brain, BookText, Share2, Sparkles, Settings, ArrowRight, Loader, BrainCircuit, Sun, Moon, FileClock, History, AlertCircle, Info, Github } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -62,25 +62,34 @@ const VideoWarningModal = ({ isOpen, onClose, themeColors }) => {
                         initial={{ scale: 0.9, opacity: 0, y: 20 }}
                         animate={{ scale: 1, opacity: 1, y: 0 }}
                         exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                        className={`${themeColors.uploadCardBg} ${themeColors.uploadCardBorder} border rounded-2xl p-8 max-w-md w-full shadow-2xl relative z-10`}
+                        className={`${themeColors.panelBackground} ${themeColors.uploadCardBorder} border rounded-2xl p-8 max-w-md w-full shadow-2xl relative z-10`}
                     >
                         <div className="flex flex-col items-center text-center">
                             <div className="bg-yellow-500/10 p-4 rounded-full mb-4">
                                 <Youtube className="h-10 w-10 text-yellow-500" />
                             </div>
                             <h3 className={`text-2xl font-bold ${themeColors.textPrimary} mb-4`}>Feature Limited</h3>
-                            <p className={`${themeColors.textSecondary} mb-8 leading-relaxed`}>
+                            <p className={`${themeColors.textPrimary} opacity-90 mb-8 leading-relaxed font-medium`}>
                                 We're sorry, but YouTube transcription is currently restricted in the production environment.
                             </p>
-                            <div className={`p-4 rounded-xl border ${themeColors.panelBorder} bg-blue-500/10 mb-8`}>
-                                <p className={`text-sm ${themeColors.textPrimary} font-medium flex items-center gap-2`}>
-                                    <Info className="h-4 w-4 text-blue-400" />
-                                    Try running this project with your own API keys for instant results, including for YouTube!
+                            <div className={`p-4 rounded-xl border ${themeColors.panelBorder} bg-blue-500/5 mb-8 shadow-sm w-full`}>
+                                <p className={`text-sm ${themeColors.textPrimary} font-semibold flex items-center justify-center gap-2 mb-4`}>
+                                    <Sparkles className="h-4 w-4 text-orange-400" />
+                                    Run locally with your API keys for instant results, including YouTube!
                                 </p>
+                                <a
+                                    href="https://github.com/rohith200589/JUST_SPEAK_AI-WORKING-VERSION.git"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-gray-900 text-white rounded-lg hover:bg-black transition-colors font-medium text-sm"
+                                >
+                                    <Github className="h-4 w-4" />
+                                    Download from GitHub
+                                </a>
                             </div>
                             <button
                                 onClick={onClose}
-                                className={`${themeColors.buttonPrimaryBg} ${themeColors.buttonPrimaryHoverBg} text-white font-semibold py-3 px-8 rounded-xl w-full transition-all flex items-center justify-center gap-2`}
+                                className={`${themeColors.buttonPrimaryBg} ${themeColors.buttonPrimaryHoverBg} text-white font-bold py-3.5 px-8 rounded-xl w-full transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2`}
                             >
                                 Got it
                             </button>
@@ -371,7 +380,7 @@ const InitialAndUploadingView = ({
                             ${(!isGenerateButtonEnabledWithProdCheck())
                                 ? `${currentThemeColors.buttonDisabledBg} ${currentThemeColors.buttonDisabledText}`
                                 : (isProduction && activeTab === 'video')
-                                    ? 'bg-gray-500/50 cursor-pointer text-white shadow-none'
+                                    ? 'bg-slate-500 cursor-pointer text-white shadow-md hover:bg-slate-600 transition-colors'
                                     : `${currentThemeColors.buttonPrimaryBg} ${currentThemeColors.buttonPrimaryHoverBg} shadow-xl text-white`
                             }
                             flex items-center justify-center gap-2
