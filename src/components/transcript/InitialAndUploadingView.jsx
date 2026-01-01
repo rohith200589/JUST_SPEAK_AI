@@ -1,7 +1,8 @@
 // src/components/transcript/InitialAndUploadingView.jsx
 import React, { useEffect, useRef, useState } from 'react';
-import { Upload, FileText, Youtube, Brain, BookText, Share2, Sparkles, Settings, ArrowRight, Loader, BrainCircuit, Sun, Moon, FileClock, History } from 'lucide-react';
+import { Upload, FileText, Youtube, Brain, BookText, Share2, Sparkles, Settings, ArrowRight, Loader, BrainCircuit, Sun, Moon, FileClock, History, AlertCircle, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // --- NEW HEADER COMPONENT ---
 const AppHeader = ({ themeColors, toggleTheme, theme }) => {
@@ -12,37 +13,85 @@ const AppHeader = ({ themeColors, toggleTheme, theme }) => {
     };
 
     return (
-        
-       <header className={`w-full py-4 px-4 md:px-8 lg:px-4 flex justify-between items-center ${themeColors.quickbg} border-b ${themeColors.border} mb-6 shadow-md`}>
-  <h2 className={`text-xl font-semibold flex items-center gap-2 ${themeColors.headerText} fontFamily-sans-serif`}>
-    <BrainCircuit className={`${themeColors.welcomeIconColor} h-6 w-6`} />
-    Transcript
-   
-  </h2>
-   
-       <div className="flex items-center gap-2">
-      {/* File-Clock icon button to redirect to history */}
-      <button
-          onClick={handleHistoryClick}
-          className={`rounded-full p-2 ${themeColors.headerBackground} ${themeColors.hoverBg} transition duration-300 ${themeColors.textPrimary}`}
-          title="View Transcript History"
-      >
-          <History className="h-5 w-5" />
-      </button>
 
-      {/* Theme Toggle Icon Button */}
-      <button
-        onClick={toggleTheme}
-        className={`rounded-full p-2 ${themeColors.headerBackground} ${themeColors.hoverBg} transition duration-300 ${themeColors.textPrimary}`}
-        title="Toggle Theme"
-      >
-        {theme === 'dark' ? <Sun className="h-6 w-6" /> : <Moon className="h-5 w-5" />}
-      </button>
-  </div>
-</header>
+        <header className={`w-full py-4 px-4 md:px-8 lg:px-4 flex justify-between items-center ${themeColors.quickbg} border-b ${themeColors.border} mb-6 shadow-md`}>
+            <h2 className={`text-xl font-semibold flex items-center gap-2 ${themeColors.headerText} fontFamily-sans-serif`}>
+                <BrainCircuit className={`${themeColors.welcomeIconColor} h-6 w-6`} />
+                Transcript
+
+            </h2>
+
+            <div className="flex items-center gap-2">
+                {/* File-Clock icon button to redirect to history */}
+                <button
+                    onClick={handleHistoryClick}
+                    className={`rounded-full p-2 ${themeColors.headerBackground} ${themeColors.hoverBg} transition duration-300 ${themeColors.textPrimary}`}
+                    title="View Transcript History"
+                >
+                    <History className="h-5 w-5" />
+                </button>
+
+                {/* Theme Toggle Icon Button */}
+                <button
+                    onClick={toggleTheme}
+                    className={`rounded-full p-2 ${themeColors.headerBackground} ${themeColors.hoverBg} transition duration-300 ${themeColors.textPrimary}`}
+                    title="Toggle Theme"
+                >
+                    {theme === 'dark' ? <Sun className="h-6 w-6" /> : <Moon className="h-5 w-5" />}
+                </button>
+            </div>
+        </header>
     );
 };
 // --- END NEW HEADER COMPONENT ---
+
+// --- VIDEO WARNING MODAL ---
+const VideoWarningModal = ({ isOpen, onClose, themeColors }) => {
+    return (
+        <AnimatePresence>
+            {isOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={onClose}
+                        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                    />
+                    <motion.div
+                        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                        animate={{ scale: 1, opacity: 1, y: 0 }}
+                        exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                        className={`${themeColors.uploadCardBg} ${themeColors.uploadCardBorder} border rounded-2xl p-8 max-w-md w-full shadow-2xl relative z-10`}
+                    >
+                        <div className="flex flex-col items-center text-center">
+                            <div className="bg-yellow-500/10 p-4 rounded-full mb-4">
+                                <Youtube className="h-10 w-10 text-yellow-500" />
+                            </div>
+                            <h3 className={`text-2xl font-bold ${themeColors.textPrimary} mb-4`}>Feature Limited</h3>
+                            <p className={`${themeColors.textSecondary} mb-8 leading-relaxed`}>
+                                We're sorry, but YouTube transcription is currently restricted in the production environment.
+                            </p>
+                            <div className={`p-4 rounded-xl border ${themeColors.panelBorder} bg-blue-500/10 mb-8`}>
+                                <p className={`text-sm ${themeColors.textPrimary} font-medium flex items-center gap-2`}>
+                                    <Info className="h-4 w-4 text-blue-400" />
+                                    Try running this project with your own API keys for instant results, including for YouTube!
+                                </p>
+                            </div>
+                            <button
+                                onClick={onClose}
+                                className={`${themeColors.buttonPrimaryBg} ${themeColors.buttonPrimaryHoverBg} text-white font-semibold py-3 px-8 rounded-xl w-full transition-all flex items-center justify-center gap-2`}
+                            >
+                                Got it
+                            </button>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
+        </AnimatePresence>
+    );
+};
+// --- END VIDEO WARNING MODAL ---
 
 
 const InitialAndUploadingView = ({
@@ -89,6 +138,9 @@ const InitialAndUploadingView = ({
     const otherSectionsRef = useRef(null);
     const [showOtherSections, setShowOtherSections] = useState(false);
     const [uploadCardIsUplifted, setUploadCardIsUplifted] = useState(false);
+    const [showVideoWarning, setShowVideoWarning] = useState(false);
+
+    const isProduction = import.meta.env.PROD;
 
     useEffect(() => {
         const handleScroll = () => {
@@ -115,9 +167,17 @@ const InitialAndUploadingView = ({
         }, 2000);
     };
 
-    const isGenerateButtonEnabled = () => {
+    const handleGenerateClick = () => {
+        if (isProduction && activeTab === 'video') {
+            setShowVideoWarning(true);
+            return;
+        }
+        handleGenerateTranscript();
+    };
+
+    const isGenerateButtonEnabledWithProdCheck = () => {
         const hasInput = (activeTab === 'file' && uploadedFile !== null) ||
-                         (activeTab === 'video' && youtubeVideoId && youtubeVideoId.trim() !== '');
+            (activeTab === 'video' && youtubeVideoId && youtubeVideoId.trim() !== '');
         return hasInput && !isTranscribing;
     };
 
@@ -207,8 +267,8 @@ const InitialAndUploadingView = ({
                         <button
                             className={`flex-1 relative py-3 px-3 text-xl font-medium transition-colors duration-200
                             ${activeTab === 'file'
-                                ? `border-b-2 ${currentThemeColors.tabActiveBorder} ${currentThemeColors.tabActiveText}`
-                                : `${currentThemeColors.tabInactiveText} ${currentThemeColors.tabHoverText}`}
+                                    ? `border-b-2 ${currentThemeColors.tabActiveBorder} ${currentThemeColors.tabActiveText}`
+                                    : `${currentThemeColors.tabInactiveText} ${currentThemeColors.tabHoverText}`}
                             `}
                             onClick={() => setActiveTab('file')}
                         >
@@ -220,8 +280,8 @@ const InitialAndUploadingView = ({
                         <button
                             className={`flex-1 relative py-3 px-3 text-xl font-medium transition-colors duration-200
                             ${activeTab === 'video'
-                                ? `border-b-2 ${currentThemeColors.tabActiveBorder} ${currentThemeColors.tabActiveText}`
-                                : `${currentThemeColors.tabInactiveText} ${currentThemeColors.tabHoverText}`}
+                                    ? `border-b-2 ${currentThemeColors.tabActiveBorder} ${currentThemeColors.tabActiveText}`
+                                    : `${currentThemeColors.tabInactiveText} ${currentThemeColors.tabHoverText}`}
                             `}
                             onClick={() => setActiveTab('video')}
                         >
@@ -271,46 +331,48 @@ const InitialAndUploadingView = ({
                             </div>
                         ) : (
                             <div className="flex-grow flex flex-col items-center justify-center">
-                                 
-                                        <>
-                                            <input
-                                                type="text"
-                                                placeholder="Paste YouTube video URL here"
-                                                className={`
+
+                                <>
+                                    <input
+                                        type="text"
+                                        placeholder="Paste YouTube video URL here"
+                                        className={`
                                                     w-full p-4 border rounded-xl ${currentThemeColors.inputFocusBorder} transition-all duration-300 ease-in-out
                                                     ${currentThemeColors.inputBg} ${currentThemeColors.inputBorder} ${currentThemeColors.textPrimary} ${currentThemeColors.inputPlaceholder}
                                                     ${youtubeVideoId ? 'mb-4' : 'mb-0'}
                                                 `}
-                                                value={videoUrl}
-                                                onChange={handleVideoUrlChange}
-                                            />
+                                        value={videoUrl}
+                                        onChange={handleVideoUrlChange}
+                                    />
 
-                                            <div className="w-full aspect-video rounded-xl overflow-hidden shadow-md mt-4 ">
-                                                <iframe
-                                                    src={`https://www.youtube.com/embed/${youtubeVideoId}`}
-                                                    title="YouTube video player"
-                                                    frameBorder="0"
-                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                    allowFullScreen
-                                                    className="w-full h-full"
-                                                ></iframe>
-                                            </div>
-                                        </>
-                                    
+                                    <div className="w-full aspect-video rounded-xl overflow-hidden shadow-md mt-4 ">
+                                        <iframe
+                                            src={`https://www.youtube.com/embed/${youtubeVideoId}`}
+                                            title="YouTube video player"
+                                            frameBorder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                            className="w-full h-full"
+                                        ></iframe>
+                                    </div>
+                                </>
+
 
                             </div>
                         )}
                     </div>
 
                     <button
-                        onClick={handleGenerateTranscript}
-                        disabled={!isGenerateButtonEnabled()}
+                        onClick={handleGenerateClick}
+                        disabled={!isGenerateButtonEnabledWithProdCheck()}
                         className={`
                             mt-8 w-full px-4 rounded-lg font-bold
                             transition-all duration-300 ease-in-out
-                            ${(!isGenerateButtonEnabled())
+                            ${(!isGenerateButtonEnabledWithProdCheck())
                                 ? `${currentThemeColors.buttonDisabledBg} ${currentThemeColors.buttonDisabledText}`
-                                : `${currentThemeColors.buttonPrimaryBg} ${currentThemeColors.buttonPrimaryHoverBg} shadow-xl text-white`
+                                : (isProduction && activeTab === 'video')
+                                    ? 'bg-gray-500/50 cursor-pointer text-white shadow-none'
+                                    : `${currentThemeColors.buttonPrimaryBg} ${currentThemeColors.buttonPrimaryHoverBg} shadow-xl text-white`
                             }
                             flex items-center justify-center gap-2
                             ${isTranscribing ? 'text-base font-sans py-3' : 'text-xl py-3'}
@@ -324,9 +386,14 @@ const InitialAndUploadingView = ({
                                 </span>
                             </>
                         ) : (
-                            'Generate Transcript'
+                            isProduction && activeTab === 'video' ? 'Try Youtube Feature' : 'Generate Transcript'
                         )}
                     </button>
+                    <VideoWarningModal
+                        isOpen={showVideoWarning}
+                        onClose={() => setShowVideoWarning(false)}
+                        themeColors={currentThemeColors}
+                    />
                     {isTranscribing && (
                         <div className="mt-4 w-full">
                             <p className={`text-base ${currentThemeColors.textSecondary} mt-2 text-center`}>
@@ -348,14 +415,14 @@ const InitialAndUploadingView = ({
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
                     {guidingCards.map((card, index) => (
                         <div key={index}
-                             className={`
+                            className={`
                                  ${currentThemeColors.guidingCardBg}
                                  ${currentThemeColors.guidingCardBorder}
                                  border rounded-xl p-6 flex flex-col items-start text-left
                                  transition-all duration-300 ease-in-out
                                  ${currentThemeColors.guidingCardHoverBg}
                              `}
-                             style={{ boxShadow: currentThemeColors.guidingCardShadow }}
+                            style={{ boxShadow: currentThemeColors.guidingCardShadow }}
                         >
                             <card.icon className={`h-10 w-10 ${currentThemeColors.welcomeIconColor} mb-4`} />
                             <h3 className={`text-xl font-semibold ${currentThemeColors.textPrimary} mb-2`}>
