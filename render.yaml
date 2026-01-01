@@ -4,7 +4,7 @@ services:
     plan: free
     runtime: python
     buildCommand: pip install -r BACKEND/requirements.txt
-    startCommand: gunicorn --worker-class gevent -w 1 --chdir BACKEND server:app
+    startCommand: gunicorn -k "geventwebsocket.gunicorn.workers.GeventWebSocketWorker" -w 1 --timeout 120 --keep-alive 5 --chdir BACKEND server:app
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
@@ -16,7 +16,7 @@ services:
     plan: free
     runtime: python
     buildCommand: pip install -r BACKEND/requirements.txt
-    startCommand: gunicorn --chdir BACKEND post:app
+    startCommand: gunicorn -k gevent -w 1 --timeout 120 --chdir BACKEND post:app
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
@@ -30,7 +30,7 @@ services:
     plan: free
     runtime: python
     buildCommand: pip install -r BACKEND/requirements.txt
-    startCommand: gunicorn --chdir BACKEND seo:app
+    startCommand: gunicorn -k gevent -w 1 --timeout 120 --chdir BACKEND seo:app
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0

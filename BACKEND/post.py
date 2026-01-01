@@ -22,7 +22,7 @@ from flask_graphql import GraphQLView
 
 # --- Flask app initialization and configuration ---
 app = Flask(__name__)
-CORS(app, origins=["*", "https://just-speak-nine.vercel.app"])
+CORS(app, resources={r"/*": {"origins": ["https://just-speak-nine.vercel.app", "http://localhost:5173", "http://localhost:3000"]}}, supports_credentials=True)
 
 @app.route('/')
 def index():
@@ -322,10 +322,7 @@ def generate_posts_sync():
                     logging.error(f"Error creating temporary cookie file: {ce}")
 
             video_id = youtube_file.get('url', '').split("v=")[-1]
-            transcript = YouTubeTranscriptApi.get_transcript(
-                video_id, 
-                cookies=cookie_file_path if cookie_file_path else None
-            )
+            transcript = YouTubeTranscriptApi.get_transcript(video_id)
             full_transcript_text = " ".join([t['text'] for t in transcript])
             all_content_sources += f"--- YouTube Video Transcript ---\n{full_transcript_text}\n---\n"
         except Exception as e:

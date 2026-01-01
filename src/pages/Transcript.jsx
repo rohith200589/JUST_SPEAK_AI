@@ -473,7 +473,10 @@ const TranscriptPage = ({ transcriptHistory, setTranscriptHistory }) => {
     }, [location.state, navigate, location.pathname]);
 
     useEffect(() => {
-        socket.current = io(BACKEND_URL);
+        socket.current = io(BACKEND_URL, {
+            transports: ['websocket', 'polling'],
+            withCredentials: true
+        });
 
         socket.current.on('connect', () => {
             console.log('Connected to Socket.IO backend');

@@ -43,9 +43,11 @@ from docx import Document # pip install python-docx
 
 
 app = Flask(__name__)
-CORS(app)
+# Professional CORS setup allowing specifically the Vercel frontend and local development
+CORS(app, resources={r"/*": {"origins": ["https://just-speak-nine.vercel.app", "http://localhost:5173", "http://localhost:3000"]}}, supports_credentials=True)
 
-socketio = SocketIO(app, cors_allowed_origins=["*","https://just-speak-nine.vercel.app"], async_mode='gevent')
+# SocketIO setup with explicit async_mode and origin allowance
+socketio = SocketIO(app, cors_allowed_origins=["https://just-speak-nine.vercel.app", "http://localhost:5173", "http://localhost:3000"], async_mode='gevent', manage_session=False)
 
 @app.route('/')
 def index():
@@ -702,9 +704,7 @@ class TranscribeVideo(graphene.Mutation):
                     fetched_transcript_list = YouTubeTranscriptApi.get_transcript(
                         video_id, 
                         languages=['en'], 
-                        preserve_formatting=True,
-                        cookies=cookie_file_path if cookie_file_path else None,
-                        proxies=proxy_dict
+                        preserve_formatting=True
                     )
                     print("English transcript fetched using youtube_transcript_api.")
                     overall_percent = calculate_overall_progress('youtube_api_fetch', 50)
@@ -717,9 +717,7 @@ class TranscribeVideo(graphene.Mutation):
                         emit('progress_update', {'type': 'overall', 'status': 'English transcript not found. Searching for any available language.', 'percentage': overall_percent}, namespace='/', broadcast=True)
 
                     available_transcripts = YouTubeTranscriptApi.list_transcripts(
-                        video_id, 
-                        cookies=cookie_file_path if cookie_file_path else None,
-                        proxies=proxy_dict
+                        video_id
                     )
                     found_any_transcript_obj = False
                     for t_obj in available_transcripts:

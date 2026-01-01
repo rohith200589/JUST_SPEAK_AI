@@ -825,7 +825,7 @@ schema = graphene.Schema(query=Query, mutation=Mutation) #
 
 # --- Flask Application Setup ---
 app = Flask(__name__)
-CORS(app, origins=["*", "https://just-speak-nine.vercel.app"]) #
+CORS(app, resources={r"/*": {"origins": ["https://just-speak-nine.vercel.app", "http://localhost:5173", "http://localhost:3000"]}}, supports_credentials=True) #
 
 app.add_url_rule(
     '/graphql',
